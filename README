@@ -1,7 +1,7 @@
 Cinder-Protocol
-===========
+===============
 
-Implementation of various network protocols for Cinder.
+Implementation of various network protocols for Cinder
 
 This is being built in tandem with Cinder-Asio, but 
 does not require it.

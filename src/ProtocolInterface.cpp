@@ -8,9 +8,9 @@ using namespace ci;
 using namespace std;
 
 string ProtocolInterface::sCrLf	= "\r\n";
-string ProtocolInterface::sLf	= "\n";
 
 ProtocolInterface::ProtocolInterface()
+: mHasHeader( false )
 {
 }
 
@@ -27,7 +27,7 @@ string ProtocolInterface::bufferToString( const Buffer& buffer )
 HeaderMap ProtocolInterface::stringToHeaderMap( const string& h )
 {
 	vector<string> tokens;
-	boost::split( tokens, h, boost::is_any_of( sLf ) );
+	boost::split( tokens, h, boost::is_any_of( sCrLf ) );
 	HeaderMap headerMap;
 	for ( vector<string>::const_iterator iter = tokens.begin(); iter != tokens.end(); ++iter ) {
 		if ( !iter->empty() ) {
@@ -42,7 +42,7 @@ string ProtocolInterface::headerMapToString( const HeaderMap& h )
 {
 	string headerMap = "";
 	for ( HeaderMap::const_iterator iter = h.begin(); iter != h.end(); ++iter ) {
-		headerMap += keyValuePairToString( *iter ) + sLf;
+		headerMap += keyValuePairToString( *iter ) + sCrLf;
 	}
 	return headerMap;
 }
@@ -67,6 +67,27 @@ KeyValuePair ProtocolInterface::stringToKeyValuePair( const string& kvp )
 string ProtocolInterface::keyValuePairToString( const KeyValuePair& kvp )
 {
 	return kvp.first + ": " + kvp.second;
+}
+
+void ProtocolInterface::append( const Buffer& data )
+{
+	
+	if ( !mHasHeader ) {
+		parse( bufferToString( data ) );
+	} else {
+		if ( !mBody || mBody.getData() == 0 || mBody.getDataSize() == 0 ) {
+			mBody = data;
+			return;
+		}
+		
+		size_t dataSizeA	= mBody.getDataSize();
+		size_t dataSizeB	= data.getDataSize();
+		size_t dataSize		= dataSizeA + dataSizeB;
+		Buffer buffer( new char[ dataSize ], dataSize );
+		memcpy( (char*)buffer.getData(),				(char*)mBody.getData(), dataSizeA );
+		memcpy( (char*)buffer.getData() + dataSizeA,	(char*)data.getData(),	dataSizeB );
+		mBody = buffer;
+	}
 }
 
 const Buffer& ProtocolInterface::getBody() const
@@ -122,28 +143,36 @@ void ProtocolInterface::setHeaders( const HeaderMap& headerMap )
 	mHeaderMap = headerMap;
 }
 
+void ProtocolInterface::parse( const string& msg )
+{
+	vector<string> tokens;
+	boost::split( tokens, msg, boost::is_any_of( sCrLf + sCrLf ) );
+	string body = "";
+	for ( size_t i = 0; i < tokens.size(); ++i ) {
+		const string& v = tokens.at( i );
+		if ( i == 0 ) {
+			parseHeader( v );
+		} else {
+			body += v;
+		}
+	}
+	mBody = stringToBuffer( body );
+}
+
 ci::Buffer ProtocolInterface::toBuffer() const
 {
 	string header		= headerToString();
 	size_t headerLength	= header.size();
 	size_t bodyLength	= 0;
 	if ( mBody ) {
-		bodyLength		= mBody.getDataSize() + 2;
+		bodyLength		= mBody.getDataSize();
 	}
+	size_t dataSize		= headerLength + bodyLength;
 	
-	size_t pos			= 0;
-	size_t total		= headerLength + bodyLength + 2;
-	
-	Buffer buffer( new char[ total ], total );
-	
-	memcpy( (char*)buffer.getData() + pos,		&header[ 0 ],		headerLength );
-	pos					+= headerLength;
-	memcpy( (char*)buffer.getData() + pos,		&sCrLf[ 0 ],		2 );
-	pos					+= 2;
+	Buffer buffer( new char[ dataSize ], dataSize );
+	memcpy( (char*)buffer.getData(),					&header[ 0 ],		headerLength );
 	if ( bodyLength > 0 ) {
-		memcpy( (char*)buffer.getData() + pos,	mBody.getData(),	bodyLength );
-		pos				+= bodyLength;
-		memcpy( (char*)buffer.getData() + pos,	&sCrLf[ 0 ],		2 );
+		memcpy( (char*)buffer.getData() + headerLength,	mBody.getData(),	bodyLength );
 	}
 	
 	return buffer;
@@ -153,7 +182,6 @@ string ProtocolInterface::toString() const
 {
 	string request	= headerToString();
 	if ( mBody ) {
-		request		+= sCrLf;
 		request		+= bufferToString( mBody );
 	}
 	return request;

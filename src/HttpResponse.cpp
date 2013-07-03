@@ -36,46 +36,34 @@ void HttpResponse::setStatusCode( size_t code )
 	mStatusCode = code;
 }
 
-void HttpResponse::parseResponse( const string& response )
+void HttpResponse::parseHeader( const string& header )
 {
-	vector<string> tokens;
-	boost::split( tokens, response, boost::is_any_of( sCrLf ) );
-	string body = "";
-	for ( size_t i = 0; i < tokens.size(); ++i ) {
-		const string& v = tokens.at( i );
-		switch ( i ) {
-			case 0:
-				parseStatusLine( v );
-				break;
-			case 1:
-				mHeaderMap = stringToHeaderMap( v );
-				break;
-			default:
-				body += v;
-				break;
+	vector<string> lines;
+	boost::split( lines, header, boost::is_any_of( sCrLf ) );
+	if ( !lines.empty() ) {
+		string status = boost::trim_copy( lines.at( 0 ) );
+		vector<string> tokens;
+		boost::split( tokens, status, boost::is_any_of( " " ) );
+		if ( tokens.size() < 2 ) {
+			throw ExcStatusLineInvalid( status );
+		} else {
+			mHttpVersion	= stringToHttpVersion( tokens.at( 0 ) );
+			mStatusCode		= fromString<size_t>( tokens.at( 1 ) );
+			mReason			= "";
+			for ( size_t i = 0; i < 2; ++i ) {
+				tokens.erase( tokens.begin() );
+			}
+			if ( !tokens.empty() ) {
+				mReason		= boost::join( tokens, " " );
+			}
 		}
+		lines.erase( lines.begin() );
 	}
-	//mBody = stringToBuffer( body );
-}
-
-void HttpResponse::parseStatusLine( const string& statusLine )
-{
-	string status = boost::trim_copy( statusLine );
-	vector<string> tokens;
-	boost::split( tokens, status, boost::is_any_of( " " ) );
-	if ( tokens.size() < 2 ) {
-		throw ExcStatusLineInvalid( statusLine );
-	} else {
-		mHttpVersion	= stringToHttpVersion( tokens.at( 0 ) );
-		mStatusCode		= fromString<size_t>( tokens.at( 1 ) );
-		mReason			= "";
-		for ( size_t i = 0; i < 2; ++i ) {
-			tokens.erase( tokens.begin() );
-		}
-		if ( !tokens.empty() ) {
-			mReason		= boost::join( tokens, " " );
-		}
-	}
+	
+	string headerMap	= boost::join( lines, sCrLf );
+	mHeaderMap			= stringToHeaderMap( headerMap );
+	
+	mHasHeader			= true;
 }
 
 string HttpResponse::headerToString() const
@@ -85,8 +73,8 @@ string HttpResponse::headerToString() const
 	header			+= sCrLf;
 	if ( !mHeaderMap.empty() ) {
 		header		+= headerMapToString( mHeaderMap );
-		header		+= sCrLf;
 	}
+	header			+= sCrLf;
 	return header;
 }
 

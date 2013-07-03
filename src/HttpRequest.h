@@ -14,7 +14,7 @@ public:
 	const std::string&	getUri() const;
 	void				setUri( const std::string& uri );
 	
-	void				parseRequestLine( const std::string& requestLine );
+	void				parseHeader( const std::string& header );
 	
 	class ExcRequestLineInvalid : public ci::Exception
 	{

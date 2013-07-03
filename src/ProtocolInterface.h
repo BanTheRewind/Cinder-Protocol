@@ -23,6 +23,8 @@ public:
 	static KeyValuePair		stringToKeyValuePair( const std::string& kvp );
 	static std::string		keyValuePairToString( const KeyValuePair& kvp );
 	
+	void					append( const ci::Buffer& data );
+	
 	const ci::Buffer&		getBody() const;
 	void					setBody( const ci::Buffer& body );
 	
@@ -33,6 +35,9 @@ public:
 	void					setHeader( const std::string& field, const std::string& value );
 	void					setHeader( const KeyValuePair& kvp );
 	void					setHeaders( const HeaderMap& headerMap );
+	
+	virtual void			parse( const std::string& msg );
+	virtual void			parseHeader( const std::string& header ) = 0;
 	
 	virtual ci::Buffer		toBuffer() const;
 	virtual std::string		toString() const;
@@ -67,6 +72,7 @@ protected:
 	virtual std::string		headerToString() const = 0;
 	
 	ci::Buffer				mBody;
+	bool					mHasHeader;
 	HeaderMap				mHeaderMap;
 	
 	friend std::ostream&	operator<<( std::ostream& out, const ProtocolInterface& h );

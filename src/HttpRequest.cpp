@@ -35,28 +35,39 @@ void HttpRequest::setUri( const string& uri )
 	mUri = uri;
 }
 
-void HttpRequest::parseRequestLine( const string& requestLine )
+void HttpRequest::parseHeader( const string& header )
 {
-	string status = boost::trim_copy( requestLine );
-	vector<string> tokens;
-	boost::split( tokens, status, boost::is_any_of( " " ) );
-	if ( tokens.size() != 3 ) {
-		throw ExcRequestLineInvalid( requestLine );
-	} else {
-		mOptions		= tokens.at( 0 );
-		mUri			= tokens.at( 1 );
-		mHttpVersion	= stringToHttpVersion( tokens.at( 2 ) );
+	vector<string> lines;
+	boost::split( lines, header, boost::is_any_of( sCrLf ) );
+	if ( !lines.empty() ) {
+		string request = boost::trim_copy( lines.at( 0 ) );
+		vector<string> tokens;
+		boost::split( tokens, request, boost::is_any_of( " " ) );
+		if ( tokens.size() < 2 ) {
+			throw ExcRequestLineInvalid( request );
+		} else {
+			mOptions		= tokens.at( 0 );
+			mUri			= tokens.at( 1 );
+			mHttpVersion	= stringToHttpVersion( tokens.at( 2 ) );
+		}
+		lines.erase( lines.begin() );
 	}
+	
+	string headerMap	= boost::join( lines, sCrLf );
+	mHeaderMap			= stringToHeaderMap( headerMap );
+	
+	mHasHeader			= true;
 }
 
 string HttpRequest::headerToString() const
 {
 	string header	= mOptions + " " + mUri + " ";
 	header			+= httpVersionToString( mHttpVersion );
+	header			+= sCrLf;
 	if ( !mHeaderMap.empty() ) {
-		header		+= sCrLf;
 		header		+= headerMapToString( mHeaderMap );
 	}
+	header			+= sCrLf;
 	return header;
 }
 

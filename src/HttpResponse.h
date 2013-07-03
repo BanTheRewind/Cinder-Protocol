@@ -14,9 +14,8 @@ public:
 	size_t				getStatusCode() const;
 	void				setStatusCode( size_t code );
 	
-	void				parseResponse( const std::string& response );
-	void				parseStatusLine( const std::string& statusLine );
-	
+	void				parseHeader( const std::string& header );
+		
 	class ExcStatusLineInvalid : public ci::Exception
 	{
 	public:
