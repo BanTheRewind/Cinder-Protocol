@@ -23,6 +23,7 @@ public:
 	static KeyValuePair		stringToKeyValuePair( const std::string& kvp );
 	static std::string		keyValuePairToString( const KeyValuePair& kvp );
 	
+	void					append( const ci::Buffer& buffer );
 	const ci::Buffer&		getBody() const;
 	void					setBody( const ci::Buffer& body );
 	
