@@ -69,23 +69,16 @@ string ProtocolInterface::keyValuePairToString( const KeyValuePair& kvp )
 	return kvp.first + ": " + kvp.second;
 }
 
-void ProtocolInterface::append( const Buffer& data )
+void ProtocolInterface::append( const ci::Buffer& buffer )
 {
-	
-	if ( !mHasHeader ) {
-		parse( bufferToString( data ) );
+	if ( mBody ) {
+		size_t s0 = mBody.getDataSize();
+		size_t s1 = buffer.getDataSize();
+		ci::Buffer b( new char[ s0 + s1 ], s0 + s1 );
+		char_traits<char>::copy( (char*)b.getData(),		(char*)mBody.getData(),		s0 );
+		char_traits<char>::copy( (char*)b.getData() + s0,	(char*)buffer.getData(),	s1 );
+		mBody = b;
 	} else {
-		if ( !mBody || mBody.getData() == 0 || mBody.getDataSize() == 0 ) {
-			mBody = data;
-			return;
-		}
-		
-		size_t dataSizeA	= mBody.getDataSize();
-		size_t dataSizeB	= data.getDataSize();
-		size_t dataSize		= dataSizeA + dataSizeB;
-		Buffer buffer( new char[ dataSize ], dataSize );
-		memcpy( (char*)buffer.getData(),				(char*)mBody.getData(), dataSizeA );
-		memcpy( (char*)buffer.getData() + dataSizeA,	(char*)data.getData(),	dataSizeB );
 		mBody = buffer;
 	}
 }
@@ -196,7 +189,6 @@ ProtocolInterface::ExcKeyValuePairInvalid::ExcKeyValuePairInvalid( const string&
 {
 	sprintf( mMessage, "\"%s\" is not a valid key:value pair", kvp.c_str() );
 }
-
 
 ostream& operator<<( ostream& out, const ProtocolInterface& p )
 {
