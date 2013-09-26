@@ -113,9 +113,14 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\ClientInterface.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\DispatcherInterface.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\ServerInterface.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\SessionInterface.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\TcpClient.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\TcpServer.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\TcpSession.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\UdpClient.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\UdpSession.cpp" />
+    <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\WaitTimer.cpp" />
     <ClCompile Include="..\..\..\src\HttpInterface.cpp" />
     <ClCompile Include="..\..\..\src\HttpRequest.cpp" />
     <ClCompile Include="..\..\..\src\HttpResponse.cpp" />
@@ -131,9 +136,14 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\ClientInterface.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\DispatcherInterface.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\ServerInterface.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\SessionInterface.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\TcpClient.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\TcpServer.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\TcpSession.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\UdpClient.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\UdpSession.h" />
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\WaitTimer.h" />
     <ClInclude Include="..\..\..\src\HttpInterface.h" />
     <ClInclude Include="..\..\..\src\HttpRequest.h" />
     <ClInclude Include="..\..\..\src\HttpResponse.h" />

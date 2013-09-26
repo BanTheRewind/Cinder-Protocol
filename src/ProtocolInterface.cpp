@@ -74,10 +74,8 @@ void ProtocolInterface::append( const ci::Buffer& buffer )
 	if ( mBody ) {
 		size_t s0 = mBody.getDataSize();
 		size_t s1 = buffer.getDataSize();
-		ci::Buffer b( new char[ s0 + s1 ], s0 + s1 );
-		char_traits<char>::copy( (char*)b.getData(),		(char*)mBody.getData(),		s0 );
-		char_traits<char>::copy( (char*)b.getData() + s0,	(char*)buffer.getData(),	s1 );
-		mBody = b;
+		mBody.resize( s0 + s1 );
+		char_traits<char>::copy( (char*)mBody.getData() + s0, (char*)buffer.getData(), s1 );
 	} else {
 		mBody = buffer;
 	}
