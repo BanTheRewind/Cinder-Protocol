@@ -71,15 +71,15 @@ string ProtocolInterface::keyValuePairToString( const KeyValuePair& kvp )
 
 void ProtocolInterface::append( const ci::Buffer& buffer )
 {
+	size_t s0 = 0;
+	size_t s1 = buffer.getDataSize();
 	if ( mBody ) {
-		size_t s0 = mBody.getDataSize();
-		size_t s1 = buffer.getDataSize();
+		s0 = mBody.getDataSize();
 		mBody.resize( s0 + s1 );
-		char_traits<char>::copy( (char*)mBody.getData() + s0, (char*)buffer.getData(), s1 );
 	} else {
 		mBody = Buffer( buffer.getDataSize() );
-		mBody.copyFrom( buffer.getData(), buffer.getDataSize() );
 	}
+	char_traits<char>::copy( (char*)mBody.getData() + s0, (char*)buffer.getData(), s1 );
 }
 
 const Buffer& ProtocolInterface::getBody() const
