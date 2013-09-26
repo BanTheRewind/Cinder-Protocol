@@ -92,7 +92,7 @@ void HttpClientApp::onError( string err, size_t bytesTransferred )
 
 void HttpClientApp::onRead( ci::Buffer buffer )
 {
-	mText		= toString( buffer.getDataSize() ) + " bytes read";
+	mText = toString( buffer.getDataSize() ) + " bytes read";
 	mHttpResponse.append( buffer );
 	mSession->read();
 }
@@ -128,7 +128,7 @@ void HttpClientApp::setup()
 	mHost			= "libcinder.org";
 	mPort			= 80;
 	
-	mHttpRequest	= HttpRequest( "POST", "/", HttpVersion::HTTP_1_0 );
+	mHttpRequest	= HttpRequest( "GET", "/", HttpVersion::HTTP_1_0 );
 	mHttpRequest.setHeader( "Host", mHost );
 	mHttpRequest.setHeader( "Accept", "*/*" );
 	mHttpRequest.setHeader( "Connection", "close" );
