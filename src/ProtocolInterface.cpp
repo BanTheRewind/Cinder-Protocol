@@ -77,7 +77,8 @@ void ProtocolInterface::append( const ci::Buffer& buffer )
 		mBody.resize( s0 + s1 );
 		char_traits<char>::copy( (char*)mBody.getData() + s0, (char*)buffer.getData(), s1 );
 	} else {
-		mBody = buffer;
+		mBody = Buffer( buffer.getDataSize() );
+		mBody.copyFrom( buffer.getData(), buffer.getDataSize() );
 	}
 }
 
