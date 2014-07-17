@@ -17,12 +17,6 @@
 		5323E6B60EAFCA7E003A9687 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5323E6B50EAFCA7E003A9687 /* QTKit.framework */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		94EE751DCA5C4F7A8CD38C63 /* CinderApp.icns in Resources */ = {isa = PBXBuildFile; fileRef = B14A5DB1785B4DB99B78CED8 /* CinderApp.icns */; };
-		AE0E300217ED0D0E00FDA487 /* ClientInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE0E2FF617ED0D0E00FDA487 /* ClientInterface.cpp */; };
-		AE0E300317ED0D0E00FDA487 /* DispatcherInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE0E2FF817ED0D0E00FDA487 /* DispatcherInterface.cpp */; };
-		AE0E300417ED0D0E00FDA487 /* SessionInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE0E2FFA17ED0D0E00FDA487 /* SessionInterface.cpp */; };
-		AE0E300517ED0D0E00FDA487 /* TcpClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE0E2FFC17ED0D0E00FDA487 /* TcpClient.cpp */; };
-		AE0E300617ED0D0E00FDA487 /* TcpServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE0E2FFE17ED0D0E00FDA487 /* TcpServer.cpp */; };
-		AE0E300717ED0D0E00FDA487 /* TcpSession.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE0E300017ED0D0E00FDA487 /* TcpSession.cpp */; };
 		AE95DD78178377F400566AE9 /* HttpInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE95DD70178377F400566AE9 /* HttpInterface.cpp */; };
 		AE95DD79178377F400566AE9 /* HttpRequest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE95DD72178377F400566AE9 /* HttpRequest.cpp */; };
 		AE95DD7A178377F400566AE9 /* HttpResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE95DD74178377F400566AE9 /* HttpResponse.cpp */; };
@@ -44,18 +38,6 @@
 		5323E6B10EAFCA74003A9687 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = /System/Library/Frameworks/CoreVideo.framework; sourceTree = "<absolute>"; };
 		5323E6B50EAFCA7E003A9687 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		8D1107320486CEB800E47090 /* HttpClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HttpClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AE0E2FF617ED0D0E00FDA487 /* ClientInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ClientInterface.cpp; path = "../../../blocks/Cinder-Asio/src/ClientInterface.cpp"; sourceTree = "<group>"; };
-		AE0E2FF717ED0D0E00FDA487 /* ClientInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClientInterface.h; path = "../../../blocks/Cinder-Asio/src/ClientInterface.h"; sourceTree = "<group>"; };
-		AE0E2FF817ED0D0E00FDA487 /* DispatcherInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DispatcherInterface.cpp; path = "../../../blocks/Cinder-Asio/src/DispatcherInterface.cpp"; sourceTree = "<group>"; };
-		AE0E2FF917ED0D0E00FDA487 /* DispatcherInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DispatcherInterface.h; path = "../../../blocks/Cinder-Asio/src/DispatcherInterface.h"; sourceTree = "<group>"; };
-		AE0E2FFA17ED0D0E00FDA487 /* SessionInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SessionInterface.cpp; path = "../../../blocks/Cinder-Asio/src/SessionInterface.cpp"; sourceTree = "<group>"; };
-		AE0E2FFB17ED0D0E00FDA487 /* SessionInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SessionInterface.h; path = "../../../blocks/Cinder-Asio/src/SessionInterface.h"; sourceTree = "<group>"; };
-		AE0E2FFC17ED0D0E00FDA487 /* TcpClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TcpClient.cpp; path = "../../../blocks/Cinder-Asio/src/TcpClient.cpp"; sourceTree = "<group>"; };
-		AE0E2FFD17ED0D0E00FDA487 /* TcpClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TcpClient.h; path = "../../../blocks/Cinder-Asio/src/TcpClient.h"; sourceTree = "<group>"; };
-		AE0E2FFE17ED0D0E00FDA487 /* TcpServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TcpServer.cpp; path = "../../../blocks/Cinder-Asio/src/TcpServer.cpp"; sourceTree = "<group>"; };
-		AE0E2FFF17ED0D0E00FDA487 /* TcpServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TcpServer.h; path = "../../../blocks/Cinder-Asio/src/TcpServer.h"; sourceTree = "<group>"; };
-		AE0E300017ED0D0E00FDA487 /* TcpSession.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TcpSession.cpp; path = "../../../blocks/Cinder-Asio/src/TcpSession.cpp"; sourceTree = "<group>"; };
-		AE0E300117ED0D0E00FDA487 /* TcpSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TcpSession.h; path = "../../../blocks/Cinder-Asio/src/TcpSession.h"; sourceTree = "<group>"; };
 		AE95DD70178377F400566AE9 /* HttpInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HttpInterface.cpp; path = "../../../../Cinder-Protocol/src/HttpInterface.cpp"; sourceTree = "<group>"; };
 		AE95DD71178377F400566AE9 /* HttpInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HttpInterface.h; path = "../../../../Cinder-Protocol/src/HttpInterface.h"; sourceTree = "<group>"; };
 		AE95DD72178377F400566AE9 /* HttpRequest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HttpRequest.cpp; path = "../../../../Cinder-Protocol/src/HttpRequest.cpp"; sourceTree = "<group>"; };
@@ -194,18 +176,6 @@
 		AE9B2C861729C878003A950B /* Cinder-Asio */ = {
 			isa = PBXGroup;
 			children = (
-				AE0E2FF617ED0D0E00FDA487 /* ClientInterface.cpp */,
-				AE0E2FF717ED0D0E00FDA487 /* ClientInterface.h */,
-				AE0E2FF817ED0D0E00FDA487 /* DispatcherInterface.cpp */,
-				AE0E2FF917ED0D0E00FDA487 /* DispatcherInterface.h */,
-				AE0E2FFA17ED0D0E00FDA487 /* SessionInterface.cpp */,
-				AE0E2FFB17ED0D0E00FDA487 /* SessionInterface.h */,
-				AE0E2FFC17ED0D0E00FDA487 /* TcpClient.cpp */,
-				AE0E2FFD17ED0D0E00FDA487 /* TcpClient.h */,
-				AE0E2FFE17ED0D0E00FDA487 /* TcpServer.cpp */,
-				AE0E2FFF17ED0D0E00FDA487 /* TcpServer.h */,
-				AE0E300017ED0D0E00FDA487 /* TcpSession.cpp */,
-				AE0E300117ED0D0E00FDA487 /* TcpSession.h */,
 			);
 			name = "Cinder-Asio";
 			sourceTree = "<group>";
@@ -273,17 +243,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE0E300217ED0D0E00FDA487 /* ClientInterface.cpp in Sources */,
 				343EF4E06FF341EF9A78DA51 /* HttpClientApp.cpp in Sources */,
-				AE0E300417ED0D0E00FDA487 /* SessionInterface.cpp in Sources */,
-				AE0E300517ED0D0E00FDA487 /* TcpClient.cpp in Sources */,
 				AE95DD78178377F400566AE9 /* HttpInterface.cpp in Sources */,
 				AE95DD79178377F400566AE9 /* HttpRequest.cpp in Sources */,
-				AE0E300617ED0D0E00FDA487 /* TcpServer.cpp in Sources */,
 				AE95DD7A178377F400566AE9 /* HttpResponse.cpp in Sources */,
 				AE95DD7B178377F400566AE9 /* ProtocolInterface.cpp in Sources */,
-				AE0E300717ED0D0E00FDA487 /* TcpSession.cpp in Sources */,
-				AE0E300317ED0D0E00FDA487 /* DispatcherInterface.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
