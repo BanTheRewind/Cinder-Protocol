@@ -38,8 +38,20 @@ void HttpResponse::setStatusCode( size_t code )
 
 void HttpResponse::parseHeader( const string& header )
 {
+	if ( header.empty() ) {
+		return;
+	}
+	size_t d	= header.find( "\r\n\r\n" );
+	size_t l	= header.length();
+	string h	= header;
+	string b	= "";
+	if ( d < l ) {
+		h		= h.substr( 0, d );
+		b		= header.substr( d, l );
+	}
+	
 	vector<string> lines;
-	boost::split( lines, header, boost::is_any_of( sCrLf ) );
+	boost::split( lines, h, boost::is_any_of( sCrLf ) );
 	if ( !lines.empty() ) {
 		string status = boost::trim_copy( lines.at( 0 ) );
 		vector<string> tokens;
@@ -64,6 +76,10 @@ void HttpResponse::parseHeader( const string& header )
 	mHeaderMap			= stringToHeaderMap( headerMap );
 	
 	mHasHeader			= true;
+	
+	if ( !b.empty() ) {
+		append( stringToBuffer( b ) );
+	}
 }
 
 string HttpResponse::headerToString() const

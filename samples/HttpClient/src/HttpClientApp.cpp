@@ -23,6 +23,7 @@ private:
 	
 	HttpRequest					mHttpRequest;
 	HttpResponse				mHttpResponse;
+	bool						mReadHeader;
 	
 	void						write();
 	
@@ -79,6 +80,7 @@ void HttpClientApp::onConnect( TcpSessionRef session )
 	mSession->connectReadCompleteEventHandler( &HttpClientApp::onReadComplete, this );
 	mSession->connectReadEventHandler( &HttpClientApp::onRead, this );
 	mSession->connectWriteEventHandler( &HttpClientApp::onWrite, this );
+	
 	mSession->write( mHttpRequest.toBuffer() );
 }
 
@@ -93,14 +95,46 @@ void HttpClientApp::onError( string err, size_t bytesTransferred )
 void HttpClientApp::onRead( ci::Buffer buffer )
 {
 	mText = toString( buffer.getDataSize() ) + " bytes read";
-	mHttpResponse.append( buffer );
+	
+	if ( mReadHeader ) {
+		mHttpResponse.parseHeader( SessionInterface::bufferToString( buffer ) );
+		mReadHeader = false;
+	} else {
+		mHttpResponse.append( buffer );
+	}
 	mSession->read();
 }
 
 void HttpClientApp::onReadComplete()
 {
 	mText = "Read complete";
+		
+	console() << "HTTP version: ";
+	switch ( mHttpResponse.getHttpVersion() ) {
+		case HttpVersion::HTTP_0_9:
+			console() << "0.9";
+			break;
+		case HttpVersion::HTTP_1_0:
+			console() << "1.0";
+			break;
+		case HttpVersion::HTTP_1_1:
+			console() << "1.1";
+			break;
+		case HttpVersion::HTTP_2_0:
+			console() << "2.0";
+			break;
+	}
+	console() << endl;
+	console() << "Status code: " << mHttpResponse.getStatusCode() << endl;
+	console() << "Reason: " << mHttpResponse.getReason() << endl;
 	
+	console() << "Headers: " << endl;
+	for ( const KeyValuePair& kvp : mHttpResponse.getHeaders() ) {
+		console() << ">> " << kvp.first << ": " << kvp.second << endl;
+	}
+	console() << endl;
+	
+	console() << "Response buffer:" << endl;
 	console() << mHttpResponse << endl;
 	
 	mSession->close();
@@ -115,7 +149,8 @@ void HttpClientApp::onWrite( size_t bytesTransferred )
 {
 	mText = toString( bytesTransferred ) + " bytes written";
 	
-	mSession->read( "\r\n\r\n" );
+	mReadHeader = true;
+	mSession->read();
 }
 
 void HttpClientApp::setup()
@@ -127,6 +162,7 @@ void HttpClientApp::setup()
 	
 	mHost			= "libcinder.org";
 	mPort			= 80;
+	mReadHeader		= true;
 	
 	mHttpRequest	= HttpRequest( "GET", "/", HttpVersion::HTTP_1_0 );
 	mHttpRequest.setHeader( "Host", mHost );
