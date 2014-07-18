@@ -37,8 +37,18 @@ void HttpRequest::setUri( const string& uri )
 
 void HttpRequest::parseHeader( const string& header )
 {
+	if ( header.empty() ) {
+		return;
+	}
+	size_t d	= header.find( sCrLf + sCrLf );
+	size_t l	= header.length();
+	string h	= header;
+	if ( d < l ) {
+		h		= h.substr( 0, d );
+	}
+	
 	vector<string> lines;
-	boost::split( lines, header, boost::is_any_of( sCrLf ) );
+	boost::split( lines, h, boost::is_any_of( sCrLf ) );
 	if ( !lines.empty() ) {
 		string request = boost::trim_copy( lines.at( 0 ) );
 		vector<string> tokens;
