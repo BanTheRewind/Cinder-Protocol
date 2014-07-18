@@ -10,14 +10,20 @@ enum : size_t
 class HttpInterface : public ProtocolInterface
 {
 public:
+	//! Creates HTTP message with version \a v.
 	HttpInterface( HttpVersion v );
 	
+	//! Parses HTTP version from \a v.
 	static HttpVersion	stringToHttpVersion( const std::string& v );
+	//! Returns string representing HTTP version \a v.
 	static std::string	httpVersionToString( HttpVersion v );
 	
+	//! Returns HTTP version.
 	HttpVersion			getHttpVersion() const;
+	//! Sets HTTP version to \a v.
 	void				setHttpVersion( HttpVersion v );
 	
+	//! Exception representing invalid HTTP version.
 	class ExcHttpVersionInvalid : public ci::Exception
 	{
 	public:

@@ -41,13 +41,11 @@ void HttpResponse::parseHeader( const string& header )
 	if ( header.empty() ) {
 		return;
 	}
-	size_t d	= header.find( "\r\n\r\n" );
+	size_t d	= header.find( sCrLf + sCrLf );
 	size_t l	= header.length();
 	string h	= header;
-	string b	= "";
 	if ( d < l ) {
 		h		= h.substr( 0, d );
-		b		= header.substr( d, l );
 	}
 	
 	vector<string> lines;
@@ -74,12 +72,7 @@ void HttpResponse::parseHeader( const string& header )
 	
 	string headerMap	= boost::join( lines, sCrLf );
 	mHeaderMap			= stringToHeaderMap( headerMap );
-	
 	mHasHeader			= true;
-	
-	if ( !b.empty() ) {
-		append( stringToBuffer( b ) );
-	}
 }
 
 string HttpResponse::headerToString() const

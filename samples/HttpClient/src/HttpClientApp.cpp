@@ -23,7 +23,6 @@ private:
 	
 	HttpRequest					mHttpRequest;
 	HttpResponse				mHttpResponse;
-	bool						mReadHeader;
 	
 	void						write();
 	
@@ -96,12 +95,11 @@ void HttpClientApp::onRead( ci::Buffer buffer )
 {
 	mText = toString( buffer.getDataSize() ) + " bytes read";
 	
-	if ( mReadHeader ) {
-		mHttpResponse.parseHeader( SessionInterface::bufferToString( buffer ) );
-		mReadHeader = false;
-	} else {
-		mHttpResponse.append( buffer );
+	if ( !mHttpResponse.hasHeader() ) {
+		mHttpResponse.parseHeader( HttpResponse::bufferToString( buffer ) );
+		buffer = HttpResponse::removeHeader( buffer );
 	}
+	mHttpResponse.append( buffer );
 	mSession->read();
 }
 
@@ -149,7 +147,6 @@ void HttpClientApp::onWrite( size_t bytesTransferred )
 {
 	mText = toString( bytesTransferred ) + " bytes written";
 	
-	mReadHeader = true;
 	mSession->read();
 }
 
@@ -162,7 +159,6 @@ void HttpClientApp::setup()
 	
 	mHost			= "libcinder.org";
 	mPort			= 80;
-	mReadHeader		= true;
 	
 	mHttpRequest	= HttpRequest( "GET", "/", HttpVersion::HTTP_1_0 );
 	mHttpRequest.setHeader( "Host", mHost );
