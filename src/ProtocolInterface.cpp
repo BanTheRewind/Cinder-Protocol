@@ -183,6 +183,7 @@ void ProtocolInterface::parse( const Buffer& buffer )
 		size_t l = sz - offset;
 		Buffer body( l );
 		char_traits<char>::copy( (char*)body.getData() + offset, (char*)buffer.getData(), l );
+		mBody = body;
 	} else {
 		parse( msg );
 	}
