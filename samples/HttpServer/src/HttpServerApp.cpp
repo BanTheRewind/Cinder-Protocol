@@ -7,31 +7,28 @@
 
 #include "HttpRequest.h"
 #include "HttpResponse.h"
-#include "TcpClient.h"
+#include "TcpServer.h"
 
-class HttpClientApp : public ci::app::AppBasic 
+class HttpServerApp : public ci::app::AppBasic 
 {
 public:
 	void						draw();
 	void						setup();
 	void						update();
 private:
-	TcpClientRef				mClient;
+	void						accept();
+	TcpServerRef				mServer;
 	TcpSessionRef				mSession;
-	std::string					mHost;
-	int32_t						mPort;
 	
 	HttpRequest					mHttpRequest;
 	HttpResponse				mHttpResponse;
 	
-	void						write();
-	
+	void						onAccept( TcpSessionRef session );
+	void						onCancel();
 	void						onClose();
-	void						onConnect( TcpSessionRef session );
 	void						onError( std::string err, size_t bytesTransferred );
 	void						onRead( ci::Buffer buffer );
 	void						onReadComplete();
-	void						onResolve();
 	void						onWrite( size_t bytesTransferred );
 	
 	ci::Font					mFont;
@@ -49,7 +46,15 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-void HttpClientApp::draw()
+void HttpServerApp::accept()
+{
+	if ( mServer ) {
+		mServer->accept( 80 );
+		mText.push_back( "Listening on port: 80" );
+	}
+}
+
+void HttpServerApp::draw()
 {
 	gl::clear( Colorf::black() );
 	gl::setMatricesWindow( getWindowSize() );
@@ -61,27 +66,12 @@ void HttpClientApp::draw()
 	mParams->draw();
 }
 
-void HttpClientApp::onClose()
+void HttpServerApp::onClose()
 {
 	mText.push_back( "Disconnected" );
 }
 
-void HttpClientApp::onConnect( TcpSessionRef session )
-{
-	mHttpResponse	= HttpResponse();
-	mSession		= session;
-	mText.push_back( "Connected" );
-	
-	mSession->connectCloseEventHandler( &HttpClientApp::onClose, this );
-	mSession->connectErrorEventHandler( &HttpClientApp::onError, this );
-	mSession->connectReadCompleteEventHandler( &HttpClientApp::onReadComplete, this );
-	mSession->connectReadEventHandler( &HttpClientApp::onRead, this );
-	mSession->connectWriteEventHandler( &HttpClientApp::onWrite, this );
-	
-	mSession->write( mHttpRequest.toBuffer() );
-}
-
-void HttpClientApp::onError( string err, size_t bytesTransferred )
+void HttpServerApp::onError( string err, size_t bytesTransferred )
 {
 	string text = "Error";
 	if ( !err.empty() ) {
@@ -90,9 +80,9 @@ void HttpClientApp::onError( string err, size_t bytesTransferred )
 	mText.push_back( text );
 }
 
-void HttpClientApp::onRead( ci::Buffer buffer )
+void HttpServerApp::onRead( ci::Buffer buffer )
 {
-	mText.push_back(toString( buffer.getDataSize() ) + " bytes read" );
+	mText.push_back( toString( buffer.getDataSize() ) + " bytes read" );
 	
 	if ( !mHttpResponse.hasHeader() ) {
 		mHttpResponse.parseHeader( HttpResponse::bufferToString( buffer ) );
@@ -102,9 +92,9 @@ void HttpClientApp::onRead( ci::Buffer buffer )
 	mSession->read();
 }
 
-void HttpClientApp::onReadComplete()
+void HttpServerApp::onReadComplete()
 {
-	mText.push_back("Read complete" );
+	mText.push_back( "Read complete" );
 		
 	console() << "HTTP version: ";
 	switch ( mHttpResponse.getHttpVersion() ) {
@@ -137,47 +127,28 @@ void HttpClientApp::onReadComplete()
 	mSession->close();
 }
 
-void HttpClientApp::onResolve()
+void HttpServerApp::onWrite( size_t bytesTransferred )
 {
-	mText.push_back( "Endpoint resolved" );
-}
-
-void HttpClientApp::onWrite( size_t bytesTransferred )
-{
-	mText.push_back(toString( bytesTransferred ) + " bytes written" );
+	mText.push_back( toString( bytesTransferred ) + " bytes written" );
+	
 	mSession->read();
 }
 
-void HttpClientApp::setup()
+void HttpServerApp::setup()
 {
 	gl::enable( GL_TEXTURE_2D );
 	
-	mFont			= Font( "Georgia", 24 );
+	mFont			= Font( "Georgia", 60 );
 	mFrameRate		= 0.0f;
 	mFullScreen		= false;
-	mHost			= "libcinder.org";
-	mPort			= 80;
 	
-	mHttpRequest = HttpRequest( "GET", "/", HttpVersion::HTTP_1_0 );
-	mHttpRequest.setHeader( "Host", mHost );
-	mHttpRequest.setHeader( "Accept", "*/*" );
-	mHttpRequest.setHeader( "Connection", "close" );
-
 	mParams = params::InterfaceGl::create( "Params", Vec2i( 200, 150 ) );
 	mParams->addParam( "Frame rate",	&mFrameRate,					"", true );
 	mParams->addParam( "Full screen",	&mFullScreen,					"key=f" );
-	mParams->addParam( "Host",			&mHost );
-	mParams->addParam( "Port",			&mPort,							"min=0 max=65535 step=1 keyDecr=p keyIncr=P" );
-	mParams->addButton( "Write", bind(	&HttpClientApp::write, this ),	"key=w" );
-	mParams->addButton( "Quit", bind(	&HttpClientApp::quit, this ),	"key=q" );
-	
-	mClient = TcpClient::create( io_service() );
-	mClient->connectConnectEventHandler( &HttpClientApp::onConnect, this );
-	mClient->connectErrorEventHandler( &HttpClientApp::onError, this );
-	mClient->connectResolveEventHandler( &HttpClientApp::onResolve, this );
+	mParams->addButton( "Quit", bind(	&HttpServerApp::quit, this ),	"key=q" );
 }
 
-void HttpClientApp::update()
+void HttpServerApp::update()
 {
 	mFrameRate = getFrameRate();
 	
@@ -201,16 +172,4 @@ void HttpClientApp::update()
 	}
 }
 
-void HttpClientApp::write()
-{
-	// This sample is meant to work with only one session at a time
-	if ( mSession && mSession->getSocket()->is_open() ) {
-		return;
-	}
-		
-	mText.push_back( "Connecting to:\n" + mHost + ":" + toString( mPort ) );
-	
-	mClient->connect( mHost, (uint16_t)mPort );		
-}
-
-CINDER_APP_BASIC( HttpClientApp, RendererGl )
+CINDER_APP_BASIC( HttpServerApp, RendererGl )
