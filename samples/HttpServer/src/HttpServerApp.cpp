@@ -28,7 +28,6 @@ private:
 	void						onClose();
 	void						onError( std::string err, size_t bytesTransferred );
 	void						onRead( ci::Buffer buffer );
-	void						onReadComplete();
 	void						onWrite( size_t bytesTransferred );
 	
 	ci::Font					mFont;
@@ -48,9 +47,11 @@ using namespace std;
 
 void HttpServerApp::accept()
 {
+	
+	// Ports <1024 are restricted to root
 	if ( mServer ) {
-		mServer->accept( 80 );
-		mText.push_back( "Listening on port: 80" );
+		mServer->accept( 2000 );
+		mText.push_back( "Listening on port: 2000" );
 	}
 }
 
@@ -66,9 +67,34 @@ void HttpServerApp::draw()
 	mParams->draw();
 }
 
+void HttpServerApp::onAccept( TcpSessionRef session )
+{
+	mHttpRequest	= HttpRequest();
+	mSession		= session;
+	mText.push_back( "Connected" );
+	
+	mSession->connectCloseEventHandler( [ & ]() {
+		mText.push_back( "Session closed" );
+	} );
+	mSession->connectErrorEventHandler( &HttpServerApp::onError, this );
+	mSession->connectReadEventHandler( &HttpServerApp::onRead, this );
+	mSession->connectWriteEventHandler( &HttpServerApp::onWrite, this );
+	
+	mSession->read();
+}
+
+void HttpServerApp::onCancel()
+{
+	mText.push_back( "Canceled" );
+	
+	accept();
+}
+
 void HttpServerApp::onClose()
 {
 	mText.push_back( "Disconnected" );
+	
+	accept();
 }
 
 void HttpServerApp::onError( string err, size_t bytesTransferred )
@@ -84,61 +110,88 @@ void HttpServerApp::onRead( ci::Buffer buffer )
 {
 	mText.push_back( toString( buffer.getDataSize() ) + " bytes read" );
 	
-	if ( !mHttpResponse.hasHeader() ) {
-		mHttpResponse.parseHeader( HttpResponse::bufferToString( buffer ) );
-		buffer = HttpResponse::removeHeader( buffer );
+	// Parse the request buffer into headers and body
+	mHttpRequest.parse( buffer );
+	
+	// We're expecting a number between 0 and 2 from the client
+	string request	= HttpRequest::bufferToString( mHttpRequest.getBody() );
+	int32_t index	= -1;
+	try {
+		index = fromString<int32_t>( request );
+	} catch ( boost::bad_lexical_cast ) {
 	}
-	mHttpResponse.append( buffer );
-	mSession->read();
-}
-
-void HttpServerApp::onReadComplete()
-{
-	mText.push_back( "Read complete" );
+	
+	// Declare an empty body
+	Buffer body;
+	
+	// Start a new response
+	mHttpResponse = HttpResponse();
+	mHttpResponse.setHeader( "Server", "Cinder" );
+	mHttpResponse.setHttpVersion( HttpVersion::HTTP_1_1 );
+	
+	if ( index < 0 || index > 2 ) {
 		
-	console() << "HTTP version: ";
-	switch ( mHttpResponse.getHttpVersion() ) {
-		case HttpVersion::HTTP_0_9:
-			console() << "0.9";
-			break;
-		case HttpVersion::HTTP_1_0:
-			console() << "1.0";
-			break;
-		case HttpVersion::HTTP_1_1:
-			console() << "1.1";
-			break;
-		case HttpVersion::HTTP_2_0:
-			console() << "2.0";
-			break;
+		// The request was invalid, so let's create an error
+		mHttpResponse.setHeader( "Content-Type", "text/html; charset=uhf-8" );
+		mHttpResponse.setReason( "Internal Server Error" );
+		mHttpResponse.setStatusCode( 500 );
+		
+		// Set the message body
+		string msg	= "\"" + request + "\" is invalid";
+		body		= HttpResponse::stringToBuffer( msg );
+		mHttpResponse.setBody( body );
+	} else {
+		
+		// Request was OK
+		mHttpResponse.setReason( "OK" );
+		mHttpResponse.setStatusCode( 200 );
+		
+		// Let's pick out a mime type and file based on the requested index
+		fs::path path;
+		string mime = "";
+		switch ( index ) {
+			case 0:
+				mime = "image/jpeg";
+				path = getAssetPath( request + ".jpg" );
+				break;
+			case 1:
+				mime = "image/png";
+				path = getAssetPath( request + ".png" );
+				break;
+			case 2:
+				mime = "audio/mp3";
+				path = getAssetPath( request + ".mp3" );
+				break;
+		}
+		mHttpResponse.setHeader( "Content-Type", mime );
+		
+		// Load the file from assets into a buffer
+		DataSourceRef file	= loadFile( path );
+		body				= file->getBuffer();
 	}
-	console() << endl;
-	console() << "Status code: " << mHttpResponse.getStatusCode() << endl;
-	console() << "Reason: " << mHttpResponse.getReason() << endl;
 	
-	console() << "Headers: " << endl;
-	for ( const KeyValuePair& kvp : mHttpResponse.getHeaders() ) {
-		console() << ">> " << kvp.first << ": " << kvp.second << endl;
-	}
-	console() << endl;
+	// Set the content length using the body size
+	mHttpResponse.setBody( body );
+	size_t sz = body.getDataSize();
+	mHttpResponse.setHeader( "Content-Length", toString( sz ) );
 	
-	console() << "Response buffer:" << endl;
-	console() << mHttpResponse << endl;
+	// Tell the client to close the connection when they're finished
+	mHttpResponse.setHeader( "Connection", "close" );
 	
-	mSession->close();
+	// Send the response back to the client
+	mSession->write( mHttpResponse.toBuffer() );
 }
 
 void HttpServerApp::onWrite( size_t bytesTransferred )
 {
 	mText.push_back( toString( bytesTransferred ) + " bytes written" );
-	
-	mSession->read();
 }
 
 void HttpServerApp::setup()
 {
 	gl::enable( GL_TEXTURE_2D );
 	
-	mFont			= Font( "Georgia", 60 );
+	mFont			= Font( "Georgia", 24 );
 	mFrameRate		= 0.0f;
 	mFullScreen		= false;
 	
@@ -146,6 +199,14 @@ void HttpServerApp::setup()
 	mParams->addParam( "Frame rate",	&mFrameRate,					"", true );
 	mParams->addParam( "Full screen",	&mFullScreen,					"key=f" );
 	mParams->addButton( "Quit", bind(	&HttpServerApp::quit, this ),	"key=q" );
+	
+	mServer = TcpServer::create( io_service() );
+	
+	mServer->connectAcceptEventHandler( &HttpServerApp::onAccept, this );
+	mServer->connectCancelEventHandler( &HttpServerApp::onCancel, this );
+	mServer->connectErrorEventHandler( &HttpServerApp::onError, this );
+	
+	accept();
 }
 
 void HttpServerApp::update()
@@ -158,7 +219,11 @@ void HttpServerApp::update()
 	}
 
 	if ( !mText.empty() ) {
-		TextBox tbox = TextBox().alignment( TextBox::LEFT ).font( mFont ).size( Vec2i( getWindowWidth() - 250, TextBox::GROW ) ).text( "" );
+		TextBox tbox = TextBox()
+			.alignment( TextBox::LEFT )
+			.font( mFont )
+			.size( Vec2i( getWindowWidth() - 250, TextBox::GROW ) )
+			.text( "" );
 		for ( vector<string>::const_reverse_iterator iter = mText.rbegin(); iter != mText.rend(); ++iter ) {
 			tbox.appendText( "> " + *iter + "\n" );
 		}

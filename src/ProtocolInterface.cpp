@@ -77,7 +77,7 @@ Buffer ProtocolInterface::removeHeader( const Buffer& buffer )
 	if ( offset < sz ) {
 		size_t l = sz - offset;
 		Buffer body( l );
-		char_traits<char>::copy( (char*)body.getData(), (char*)buffer.getData() + offset, l );
+		char_traits<char>::copy( (char*)body.getData(), (char*)buffer.getData() + ( offset + 4 ), l );
 		return body;
 	} else {
 		return Buffer();
@@ -104,7 +104,13 @@ const Buffer& ProtocolInterface::getBody() const
 
 void ProtocolInterface::setBody( const Buffer& body )
 {
-	mBody = body;
+	size_t sz = body.getDataSize();
+	if ( mBody && sz > 0 ) {
+		mBody.resize( sz );
+	} else {
+		mBody = Buffer( sz );
+	}
+	char_traits<char>::copy( (char*)mBody.getData(), (char*)body.getData(), sz );
 }
 
 void ProtocolInterface::eraseHeader( const string& field )
@@ -182,7 +188,7 @@ void ProtocolInterface::parse( const Buffer& buffer )
 		
 		size_t l = sz - offset;
 		Buffer body( l );
-		char_traits<char>::copy( (char*)body.getData(), (char*)buffer.getData() + offset, l );
+		char_traits<char>::copy( (char*)body.getData(), (char*)buffer.getData() + ( offset + 4 ), l );
 		mBody = body;
 	} else {
 		parse( msg );
@@ -200,9 +206,10 @@ Buffer ProtocolInterface::toBuffer() const
 	size_t dataSize		= headerLength + bodyLength;
 	
 	Buffer buffer( new char[ dataSize ], dataSize );
-	memcpy( (char*)buffer.getData(),					&header[ 0 ],		headerLength );
+	
+	char_traits<char>::copy( (char*)buffer.getData(), (char*)&header[ 0 ], headerLength );
 	if ( bodyLength > 0 ) {
-		memcpy( (char*)buffer.getData() + headerLength,	mBody.getData(),	bodyLength );
+		char_traits<char>::copy( (char*)buffer.getData() + headerLength, (char*)mBody.getData(), bodyLength );
 	}
 	
 	return buffer;
