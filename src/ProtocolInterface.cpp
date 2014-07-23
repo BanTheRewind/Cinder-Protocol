@@ -14,14 +14,18 @@ ProtocolInterface::ProtocolInterface()
 {
 }
 
-Buffer ProtocolInterface::stringToBuffer( string& value )
+Buffer ProtocolInterface::stringToBuffer( const string& value )
 {
-	return Buffer( &value[ 0 ], value.size() );
+	return Buffer( (char*)&value[ 0 ], value.size() );
 }
 
 string ProtocolInterface::bufferToString( const Buffer& buffer )
 {
-	return string( static_cast<const char*>( buffer.getData() ) );
+	string s( static_cast<const char*>( buffer.getData() ) );
+	if ( s.length() > buffer.getDataSize() ) {
+		s.resize( buffer.getDataSize() );
+	}
+	return s;
 }
 
 HeaderMap ProtocolInterface::stringToHeaderMap( const string& h )
@@ -75,9 +79,9 @@ Buffer ProtocolInterface::removeHeader( const Buffer& buffer )
 	size_t offset	= msg.find( sCrLf + sCrLf );
 	size_t sz		= buffer.getDataSize();
 	if ( offset < sz ) {
-		size_t l = sz - offset;
-		Buffer body( l );
-		char_traits<char>::copy( (char*)body.getData(), (char*)buffer.getData() + offset, l );
+		size_t len = ( sz - offset ) - 4;
+		Buffer body( len );
+		char_traits<char>::copy( (char*)body.getData(), (char*)buffer.getData() + ( offset + 4 ), len );
 		return body;
 	} else {
 		return Buffer();
@@ -86,15 +90,15 @@ Buffer ProtocolInterface::removeHeader( const Buffer& buffer )
 
 void ProtocolInterface::append( const ci::Buffer& buffer )
 {
-	size_t s0 = 0;
-	size_t s1 = buffer.getDataSize();
+	size_t sz	= 0;
+	size_t len	= buffer.getDataSize();
 	if ( mBody ) {
-		s0 = mBody.getDataSize();
-		mBody.resize( s0 + s1 );
+		sz = mBody.getDataSize();
+		mBody.resize( sz + len );
 	} else {
-		mBody = Buffer( buffer.getDataSize() );
+		mBody = Buffer( len );
 	}
-	char_traits<char>::copy( (char*)mBody.getData() + s0, (char*)buffer.getData(), s1 );
+	char_traits<char>::copy( (char*)mBody.getData() + sz, (char*)buffer.getData(), len );
 }
 
 const Buffer& ProtocolInterface::getBody() const
@@ -104,7 +108,13 @@ const Buffer& ProtocolInterface::getBody() const
 
 void ProtocolInterface::setBody( const Buffer& body )
 {
-	mBody = body;
+	size_t sz = body.getDataSize();
+	if ( mBody && sz > 0 ) {
+		mBody.resize( sz );
+	} else {
+		mBody = Buffer( sz );
+	}
+	char_traits<char>::copy( (char*)mBody.getData(), (char*)body.getData(), sz );
 }
 
 void ProtocolInterface::eraseHeader( const string& field )
@@ -157,18 +167,8 @@ void ProtocolInterface::setHeaders( const HeaderMap& headerMap )
 
 void ProtocolInterface::parse( const string& msg )
 {
-	vector<string> tokens;
-	boost::split( tokens, msg, boost::is_any_of( sCrLf + sCrLf ) );
-	string body = "";
-	for ( size_t i = 0; i < tokens.size(); ++i ) {
-		const string& v = tokens.at( i );
-		if ( i == 0 ) {
-			parseHeader( v );
-		} else {
-			body += v;
-		}
-	}
-	mBody = stringToBuffer( body );
+	Buffer buffer( (char*)&msg[ 0 ], msg.length() );
+	parse( buffer );
 }
 
 void ProtocolInterface::parse( const Buffer& buffer )
@@ -180,9 +180,9 @@ void ProtocolInterface::parse( const Buffer& buffer )
 		msg = msg.substr( 0, offset );
 		parseHeader( msg );
 		
-		size_t l = sz - offset;
-		Buffer body( l );
-		char_traits<char>::copy( (char*)body.getData(), (char*)buffer.getData() + offset, l );
+		size_t len = sz - offset;
+		Buffer body( len );
+		char_traits<char>::copy( (char*)body.getData(), (char*)buffer.getData() + ( offset + 4 ), len );
 		mBody = body;
 	} else {
 		parse( msg );
@@ -197,12 +197,12 @@ Buffer ProtocolInterface::toBuffer() const
 	if ( mBody ) {
 		bodyLength		= mBody.getDataSize();
 	}
-	size_t dataSize		= headerLength + bodyLength;
+	size_t sz			= headerLength + bodyLength;
 	
-	Buffer buffer( new char[ dataSize ], dataSize );
-	memcpy( (char*)buffer.getData(),					&header[ 0 ],		headerLength );
+	Buffer buffer( sz );
+	char_traits<char>::copy( (char*)buffer.getData(), (char*)&header[ 0 ], headerLength );
 	if ( bodyLength > 0 ) {
-		memcpy( (char*)buffer.getData() + headerLength,	mBody.getData(),	bodyLength );
+		char_traits<char>::copy( (char*)buffer.getData() + headerLength, (char*)mBody.getData(), bodyLength );
 	}
 	
 	return buffer;
@@ -210,11 +210,12 @@ Buffer ProtocolInterface::toBuffer() const
 
 string ProtocolInterface::toString() const
 {
-	string request	= headerToString();
+	string body		= "";
+	string header	= headerToString();
 	if ( mBody ) {
-		request		+= bufferToString( mBody );
+		body		= bufferToString( mBody );
 	}
-	return request;
+	return header + body;
 }
 
 ProtocolInterface::ExcHeaderNotFound::ExcHeaderNotFound( const string& field ) throw()

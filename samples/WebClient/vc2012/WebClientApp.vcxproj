@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{74202EDD-91D2-4D2A-B0B6-355CEB16E6BE}</ProjectGuid>
-    <RootNamespace>HttpClientApp</RootNamespace>
+    <RootNamespace>WebClientApp</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -218,7 +218,7 @@
     <ClCompile Include="..\..\..\src\HttpRequest.cpp" />
     <ClCompile Include="..\..\..\src\HttpResponse.cpp" />
     <ClCompile Include="..\..\..\src\ProtocolInterface.cpp" />
-    <ClCompile Include="..\src\HttpClientApp.cpp" />
+    <ClCompile Include="..\src\WebClientApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\resources\cinder_app_icon.ico" />

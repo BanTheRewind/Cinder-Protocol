@@ -19,8 +19,11 @@ private:
 	TcpClientRef				mClient;
 	TcpSessionRef				mSession;
 	std::string					mHost;
-	int32_t						mPort;
 	
+	size_t						mBytesRead;
+	size_t						mContentLength;
+	std::string					mFilename;
+	int32_t						mIndex;
 	HttpRequest					mHttpRequest;
 	HttpResponse				mHttpResponse;
 	
@@ -30,7 +33,6 @@ private:
 	void						onConnect( TcpSessionRef session );
 	void						onError( std::string err, size_t bytesTransferred );
 	void						onRead( ci::Buffer buffer );
-	void						onReadComplete();
 	void						onResolve();
 	void						onWrite( size_t bytesTransferred );
 	
@@ -44,6 +46,8 @@ private:
 };
 
 #include "cinder/Utilities.h"
+#include <fstream>
+#include <iostream>
 
 using namespace ci;
 using namespace ci::app;
@@ -74,9 +78,10 @@ void HttpClientApp::onConnect( TcpSessionRef session )
 	
 	mSession->connectCloseEventHandler( &HttpClientApp::onClose, this );
 	mSession->connectErrorEventHandler( &HttpClientApp::onError, this );
-	mSession->connectReadCompleteEventHandler( &HttpClientApp::onReadComplete, this );
 	mSession->connectReadEventHandler( &HttpClientApp::onRead, this );
 	mSession->connectWriteEventHandler( &HttpClientApp::onWrite, this );
+	
+	console() << mHttpRequest << endl;
 	
 	mSession->write( mHttpRequest.toBuffer() );
 }
@@ -92,49 +97,79 @@ void HttpClientApp::onError( string err, size_t bytesTransferred )
 
 void HttpClientApp::onRead( ci::Buffer buffer )
 {
-	mText.push_back(toString( buffer.getDataSize() ) + " bytes read" );
+	size_t sz	= buffer.getDataSize();
+	mBytesRead	+= sz;
+	mText.push_back( toString( sz ) + " bytes read" );
 	
 	if ( !mHttpResponse.hasHeader() ) {
+		
+		// Parse header
 		mHttpResponse.parseHeader( HttpResponse::bufferToString( buffer ) );
 		buffer = HttpResponse::removeHeader( buffer );
-	}
-	mHttpResponse.append( buffer );
-	mSession->read();
-}
-
-void HttpClientApp::onReadComplete()
-{
-	mText.push_back("Read complete" );
 		
-	console() << "HTTP version: ";
-	switch ( mHttpResponse.getHttpVersion() ) {
-		case HttpVersion::HTTP_0_9:
-			console() << "0.9";
-			break;
-		case HttpVersion::HTTP_1_0:
-			console() << "1.0";
-			break;
-		case HttpVersion::HTTP_1_1:
-			console() << "1.1";
-			break;
-		case HttpVersion::HTTP_2_0:
-			console() << "2.0";
-			break;
+		// Get content-length
+		for ( const KeyValuePair& kvp : mHttpResponse.getHeaders() ) {
+			if ( kvp.first == "Content-Length" ) {
+				mContentLength = fromString<size_t>( kvp.second );
+				break;
+			}
+		}
 	}
-	console() << endl;
-	console() << "Status code: " << mHttpResponse.getStatusCode() << endl;
-	console() << "Reason: " << mHttpResponse.getReason() << endl;
 	
-	console() << "Headers: " << endl;
-	for ( const KeyValuePair& kvp : mHttpResponse.getHeaders() ) {
-		console() << ">> " << kvp.first << ": " << kvp.second << endl;
+	// Append buffer to body
+	mHttpResponse.append( buffer );
+	
+	if ( mBytesRead < mContentLength ) {
+		
+		// Keep reading until we hit the content length
+		mSession->read();
+	} else {
+
+		mText.push_back( "Read complete" );
+		mText.push_back( toString( mHttpResponse.getStatusCode() ) + " " + mHttpResponse.getReason() );
+		
+		if ( mHttpResponse.getStatusCode() == 200 ) {
+			for ( const KeyValuePair& kvp : mHttpResponse.getHeaders() ) {
+				
+				// Choose file extension based on MIME type
+				if ( kvp.first == "Content-Type" ) {
+					string mime = kvp.second;
+					
+					if ( mime == "audio/mp3" ) {
+						mFilename += ".mp3";
+					} else if ( mime == "image/jpeg" ) {
+						mFilename += ".jpg";
+					} else if ( mime == "image/png" ) {
+						mFilename += ".png";
+					}
+				} else if ( kvp.first == "Connection" ) {
+					
+					// Close connection if requested by server
+					if ( kvp.second == "close" ) {
+						mSession->close();
+					}
+				}
+			}
+
+			// Save the file
+			ofstream file;
+			fs::path path = getAppPath();
+#if !defined ( CINDER_MSW )
+			path = path.parent_path();
+#endif
+			path = path / mFilename;
+			file.open( path.string().c_str(), ios::out | ios::trunc | ios::binary );
+			file.close();
+			
+			mText.push_back( mFilename + " downloaded" );
+		} else {
+			
+			// Write error
+			mText.push_back( "Response: " +  HttpResponse::bufferToString( mHttpResponse.getBody() ) );
+			
+			mSession->close();
+		}
 	}
-	console() << endl;
-	
-	console() << "Response buffer:" << endl;
-	console() << mHttpResponse << endl;
-	
-	mSession->close();
 }
 
 void HttpClientApp::onResolve()
@@ -152,24 +187,25 @@ void HttpClientApp::setup()
 {
 	gl::enable( GL_TEXTURE_2D );
 	
+	mBytesRead		= 0;
+	mContentLength	= 0;
 	mFont			= Font( "Georgia", 24 );
 	mFrameRate		= 0.0f;
 	mFullScreen		= false;
-	mHost			= "libcinder.org";
-	mPort			= 80;
+	mHost			= "127.0.0.1";
+	mIndex			= 0;
 	
-	mHttpRequest = HttpRequest( "GET", "/", HttpVersion::HTTP_1_0 );
-	mHttpRequest.setHeader( "Host", mHost );
-	mHttpRequest.setHeader( "Accept", "*/*" );
-	mHttpRequest.setHeader( "Connection", "close" );
+	mHttpRequest = HttpRequest( "GET", "/", HttpVersion::HTTP_1_1 );
+	mHttpRequest.setHeader( "Host",			mHost );
+	mHttpRequest.setHeader( "Accept",		"*/*" );
 
 	mParams = params::InterfaceGl::create( "Params", Vec2i( 200, 150 ) );
-	mParams->addParam( "Frame rate",	&mFrameRate,					"", true );
-	mParams->addParam( "Full screen",	&mFullScreen,					"key=f" );
+	mParams->addParam( "Frame rate",	&mFrameRate,			"", true );
+	mParams->addParam( "Full screen",	&mFullScreen,			"key=f" );
+	mParams->addParam( "Image index",	&mIndex,				"min=0 max=3 step=1 keyDecr=i keyIncr=I" );
 	mParams->addParam( "Host",			&mHost );
-	mParams->addParam( "Port",			&mPort,							"min=0 max=65535 step=1 keyDecr=p keyIncr=P" );
-	mParams->addButton( "Write", bind(	&HttpClientApp::write, this ),	"key=w" );
-	mParams->addButton( "Quit", bind(	&HttpClientApp::quit, this ),	"key=q" );
+	mParams->addButton( "Write",		[ & ]() { write(); },	"key=w" );
+	mParams->addButton( "Quit",			[ & ]() { quit(); },	"key=q" );
 	
 	mClient = TcpClient::create( io_service() );
 	mClient->connectConnectEventHandler( &HttpClientApp::onConnect, this );
@@ -187,7 +223,11 @@ void HttpClientApp::update()
 	}
 
 	if ( !mText.empty() ) {
-		TextBox tbox = TextBox().alignment( TextBox::LEFT ).font( mFont ).size( Vec2i( getWindowWidth() - 250, TextBox::GROW ) ).text( "" );
+		TextBox tbox = TextBox()
+			.alignment( TextBox::LEFT )
+			.font( mFont )
+			.size( Vec2i( getWindowWidth() - 250, TextBox::GROW ) )
+			.text( "" );
 		for ( vector<string>::const_reverse_iterator iter = mText.rbegin(); iter != mText.rend(); ++iter ) {
 			tbox.appendText( "> " + *iter + "\n" );
 		}
@@ -203,14 +243,24 @@ void HttpClientApp::update()
 
 void HttpClientApp::write()
 {
-	// This sample is meant to work with only one session at a time
 	if ( mSession && mSession->getSocket()->is_open() ) {
 		return;
 	}
-		
-	mText.push_back( "Connecting to:\n" + mHost + ":" + toString( mPort ) );
 	
-	mClient->connect( mHost, (uint16_t)mPort );		
+	// Reset download stats
+	mBytesRead		= 0;
+	mContentLength	= 0;
+	
+	// Update request body
+	string index	= toString( mIndex );
+	mFilename		= index;
+	Buffer body		= HttpRequest::stringToBuffer( index );
+	mHttpRequest.setBody( body );
+	
+	mText.push_back( "Connecting to:\n" + mHost + ":2000" );
+	
+	// Ports <1024 are restricted to root
+	mClient->connect( mHost, 2000 );
 }
 
 CINDER_APP_BASIC( HttpClientApp, RendererGl )
