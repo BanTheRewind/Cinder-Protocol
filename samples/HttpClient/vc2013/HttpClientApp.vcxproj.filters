@@ -63,6 +63,9 @@
     <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\UdpClient.cpp">
       <Filter>Blocks\Cinder-Asio</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\UdpServer.cpp">
+      <Filter>Blocks\Cinder-Asio</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\UdpSession.cpp">
       <Filter>Blocks\Cinder-Asio</Filter>
     </ClCompile>
@@ -93,13 +96,25 @@
     <ClInclude Include="..\..\..\src\ProtocolInterface.h">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\ClientEventHandlerInterface.h">
+      <Filter>Blocks\Cinder-Asio</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\ClientInterface.h">
+      <Filter>Blocks\Cinder-Asio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\DispatcherEventHandlerInterface.h">
       <Filter>Blocks\Cinder-Asio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\DispatcherInterface.h">
       <Filter>Blocks\Cinder-Asio</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\ServerEventHandlerInterface.h">
+      <Filter>Blocks\Cinder-Asio</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\ServerInterface.h">
+      <Filter>Blocks\Cinder-Asio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\SessionEventHandlerInterface.h">
       <Filter>Blocks\Cinder-Asio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\SessionInterface.h">
@@ -108,19 +123,43 @@
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\TcpClient.h">
       <Filter>Blocks\Cinder-Asio</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\TcpClientEventHandlerInterface.h">
+      <Filter>Blocks\Cinder-Asio</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\TcpServer.h">
+      <Filter>Blocks\Cinder-Asio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\TcpServerEventHandlerInterface.h">
       <Filter>Blocks\Cinder-Asio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\TcpSession.h">
       <Filter>Blocks\Cinder-Asio</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\TcpSessionEventHandlerInterface.h">
+      <Filter>Blocks\Cinder-Asio</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\UdpClient.h">
+      <Filter>Blocks\Cinder-Asio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\UdpClientEventHandlerInterface.h">
+      <Filter>Blocks\Cinder-Asio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\UdpServer.h">
+      <Filter>Blocks\Cinder-Asio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\UdpServerEventHandlerInterface.h">
       <Filter>Blocks\Cinder-Asio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\UdpSession.h">
       <Filter>Blocks\Cinder-Asio</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\UdpSessionEventHandlerInterface.h">
+      <Filter>Blocks\Cinder-Asio</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\WaitTimer.h">
+      <Filter>Blocks\Cinder-Asio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\WaitTimerEventHandlerInterface.h">
       <Filter>Blocks\Cinder-Asio</Filter>
     </ClInclude>
   </ItemGroup>

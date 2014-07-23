@@ -14,14 +14,18 @@ ProtocolInterface::ProtocolInterface()
 {
 }
 
-Buffer ProtocolInterface::stringToBuffer( string& value )
+Buffer ProtocolInterface::stringToBuffer( const string& value )
 {
-	return Buffer( &value[ 0 ], value.size() );
+	return Buffer( (char*)&value[ 0 ], value.size() );
 }
 
 string ProtocolInterface::bufferToString( const Buffer& buffer )
 {
-	return string( static_cast<const char*>( buffer.getData() ), buffer.getDataSize() );
+	string s( static_cast<const char*>( buffer.getData() ) );
+	if ( s.length() > buffer.getDataSize() ) {
+		s = string( static_cast<const char*>( buffer.getData() ), buffer.getDataSize() );
+	}
+	return s;
 }
 
 HeaderMap ProtocolInterface::stringToHeaderMap( const string& h )
@@ -163,18 +167,8 @@ void ProtocolInterface::setHeaders( const HeaderMap& headerMap )
 
 void ProtocolInterface::parse( const string& msg )
 {
-	vector<string> tokens;
-	boost::split( tokens, msg, boost::is_any_of( sCrLf + sCrLf ) );
-	string body = "";
-	for ( size_t i = 0; i < tokens.size(); ++i ) {
-		const string& v = tokens.at( i );
-		if ( i == 0 ) {
-			parseHeader( v );
-		} else {
-			body += v;
-		}
-	}
-	mBody = stringToBuffer( body );
+	Buffer buffer( (char*)&msg[ 0 ], msg.length() );
+	parse( buffer );
 }
 
 void ProtocolInterface::parse( const Buffer& buffer )

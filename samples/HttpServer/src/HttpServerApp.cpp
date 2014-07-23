@@ -113,22 +113,28 @@ void HttpServerApp::onRead( ci::Buffer buffer )
 	// Parse the request buffer into headers and body
 	mHttpRequest.parse( buffer );
 	
+	console() << mHttpRequest << endl;
+
 	// We're expecting a number between 0 and 2 from the client
 	string request	= HttpRequest::bufferToString( mHttpRequest.getBody() );
 	int32_t index	= -1;
 	try {
+
+		console() << "Body:" << endl << request.length() << endl;
+
 		index = fromString<int32_t>( request );
 	} catch ( boost::bad_lexical_cast ) {
+		console() << "Unable to cast to int32_t" << endl;
 	}
-	
-	// Declare an empty body
-	Buffer body;
 	
 	// Start a new response
 	mHttpResponse = HttpResponse();
 	mHttpResponse.setHeader( "Server", "Cinder" );
 	mHttpResponse.setHttpVersion( HttpVersion::HTTP_1_1 );
 	
+	// Declare an empty response body
+	Buffer body;
+
 	if ( index < 0 || index > 2 ) {
 		
 		// The request was invalid, so let's create an error

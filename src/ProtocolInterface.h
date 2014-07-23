@@ -12,9 +12,8 @@ typedef std::map<std::string, std::string>	HeaderMap;
 class ProtocolInterface
 {
 public:
-	//! Return string \a value as Buffer. \a value must be non-const.
-	//	TODO: allow ( const std::string& value ) arg
-	static ci::Buffer		stringToBuffer( std::string& value );
+	//! Return string \a value as Buffer.
+	static ci::Buffer		stringToBuffer( const std::string& value );
 	//! Returns string representation of \a buffer.
 	static std::string		bufferToString( const ci::Buffer& buffer );
 	
