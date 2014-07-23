@@ -13,16 +13,16 @@ public:
 	//! Returns reason.
 	const std::string&	getReason() const;
 	//! Sets reason to \a reason.
-	void				setReason( const std::string& reason );
+	void		setReason( const std::string& reason );
 	
 	//! Returns status code.
-	size_t				getStatusCode() const;
+	size_t		getStatusCode() const;
 	//! Sets status code to \a code.
-	void				setStatusCode( size_t code );
+	void		setStatusCode( size_t code );
 	
 	/*! Parses header from \a header. Throws exceptions for incomplete
 		or invalid headers. */
-	void				parseHeader( const std::string& header );
+	void		parseHeader( const std::string& header );
 	
 	//! Exception representing invalid status line.
 	class ExcStatusLineInvalid : public ci::Exception
@@ -37,8 +37,8 @@ public:
 		char mMessage[ 2048 ];
 	};
 protected:
-	std::string			headerToString() const;
+	std::string	headerToString() const;
 	
-	std::string			mReason;
-	size_t				mStatusCode;
+	std::string	mReason;
+	size_t		mStatusCode;
 };

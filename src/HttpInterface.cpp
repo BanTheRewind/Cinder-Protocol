@@ -8,7 +8,7 @@ using namespace ci;
 using namespace std;
 
 HttpInterface::HttpInterface( HttpVersion v )
-: ProtocolInterface(), mHttpVersion( v )
+: BodyInterface(), HeaderInterface(), mHttpVersion( v )
 {
 }
 
@@ -62,7 +62,60 @@ void HttpInterface::setHttpVersion( HttpVersion v )
 	mHttpVersion = v;
 }
 
+void HttpInterface::parse( const Buffer& buffer )
+{
+	string msg		= bufferToString( buffer );
+	size_t offset	= msg.find( sCrLf + sCrLf );
+	size_t sz		= buffer.getDataSize();
+	if ( offset < sz ) {
+		msg = msg.substr( 0, offset );
+		parseHeader( msg );
+
+		size_t len = sz - offset;
+		Buffer body( len );
+		char_traits<char>::copy( (char*)body.getData(), (char*)buffer.getData() + ( offset + 4 ), len );
+		mBody = body;
+	}
+}
+
+Buffer HttpInterface::toBuffer() const
+{
+	string header		= headerToString();
+	size_t headerLength	= header.size();
+	size_t bodyLength	= 0;
+	if ( mBody ) {
+		bodyLength		= mBody.getDataSize();
+	}
+	size_t sz			= headerLength + bodyLength;
+
+	Buffer buffer( sz );
+	char_traits<char>::copy( (char*)buffer.getData(), (char*)&header[ 0 ], headerLength );
+	if ( bodyLength > 0 ) {
+		char_traits<char>::copy( (char*)buffer.getData() + headerLength, (char*)mBody.getData(), bodyLength );
+	}
+
+	return buffer;
+}
+
+string HttpInterface::toString() const
+{
+	string body		= "";
+	string header	= headerToString();
+	if ( mBody ) {
+		body		= bufferToString( mBody );
+	}
+	return header + body;
+}
+
+
 HttpInterface::ExcHttpVersionInvalid::ExcHttpVersionInvalid( const string& ver ) throw()
 {
 	sprintf( mMessage, "\"%s\" is not a valid HTTP version", ver.c_str() );
 }
+
+ostream& operator<<( ostream& out, const HttpInterface& p )
+{
+	out << p.toString();
+	return out;
+}
+ 

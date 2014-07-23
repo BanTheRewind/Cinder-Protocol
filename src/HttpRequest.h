@@ -13,16 +13,16 @@ public:
 	//! Returns HTTP options as string.
 	const std::string&	getOptions() const;
 	//! Sets HTTP options to \a options.
-	void				setOptions( const std::string& options );
+	void		setOptions( const std::string& options );
 
 	//! Return URI as string.
 	const std::string&	getUri() const;
 	//! Sets URI to \a uri.
-	void				setUri( const std::string& uri );
+	void		setUri( const std::string& uri );
 	
 	/*! Parses header from \a header. Throws exceptions for incomplete
 		or invalid headers. */
-	void				parseHeader( const std::string& header );
+	void		parseHeader( const std::string& header );
 	
 	//! Exception representing invalid request line.
 	class ExcRequestLineInvalid : public ci::Exception
@@ -37,8 +37,8 @@ public:
 		char mMessage[ 2048 ];
 	};
 protected:
-	std::string			headerToString() const;
+	std::string	headerToString() const;
 	
-	std::string			mOptions;
-	std::string			mUri;
+	std::string	mOptions;
+	std::string	mUri;
 };
