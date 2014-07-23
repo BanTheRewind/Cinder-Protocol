@@ -5,6 +5,8 @@ bin
 build
 DerivedData
 ipch
+x64
+Win32
 Debug
 Release
 *.opensdf

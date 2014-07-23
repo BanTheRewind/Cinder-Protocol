@@ -119,9 +119,6 @@ void HttpServerApp::onRead( ci::Buffer buffer )
 	string request	= HttpRequest::bufferToString( mHttpRequest.getBody() );
 	int32_t index	= -1;
 	try {
-
-		console() << "Body:" << endl << request.length() << endl;
-
 		index = fromString<int32_t>( request );
 	} catch ( boost::bad_lexical_cast ) {
 		console() << "Unable to cast to int32_t" << endl;
@@ -191,6 +188,9 @@ void HttpServerApp::onRead( ci::Buffer buffer )
 void HttpServerApp::onWrite( size_t bytesTransferred )
 {
 	mText.push_back( toString( bytesTransferred ) + " bytes written" );
+
+	mSession->close();
+	accept();
 }
 
 void HttpServerApp::setup()

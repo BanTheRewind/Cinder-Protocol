@@ -159,17 +159,13 @@ void HttpClientApp::onRead( ci::Buffer buffer )
 #endif
 			path = path / mFilename;
 			file.open( path.string().c_str(), ios::out | ios::trunc | ios::binary );
-			console() << mHttpResponse.getBody() << endl;
-			file.write( (char*)mHttpResponse.getBody().getData(), mHttpResponse.getBody().getDataSize() );
 			file.close();
 			
 			mText.push_back( mFilename + " downloaded" );
 		} else {
 			
 			// Write error
-			mText.push_back( toString( mHttpResponse.getStatusCode() ) + " " + mHttpResponse.getReason() );
-			string s = HttpResponse::bufferToString( mHttpResponse.getBody() );
-			mText.push_back( "Response: " +  s );
+			mText.push_back( "Response: " +  HttpResponse::bufferToString( mHttpResponse.getBody() ) );
 			
 			mSession->close();
 		}
@@ -199,7 +195,7 @@ void HttpClientApp::setup()
 	mHost			= "127.0.0.1";
 	mIndex			= 0;
 	
-	mHttpRequest = HttpRequest( "GET", "/", HttpVersion::HTTP_1_0 );
+	mHttpRequest = HttpRequest( "GET", "/", HttpVersion::HTTP_1_1 );
 	mHttpRequest.setHeader( "Host",			mHost );
 	mHttpRequest.setHeader( "Accept",		"*/*" );
 
