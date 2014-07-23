@@ -168,7 +168,8 @@ void HttpClientApp::onRead( ci::Buffer buffer )
 			
 			// Write error
 			mText.push_back( toString( mHttpResponse.getStatusCode() ) + " " + mHttpResponse.getReason() );
-			mText.push_back( "Response: " + HttpResponse::bufferToString( mHttpResponse.getBody() ) );
+			string s = HttpResponse::bufferToString( mHttpResponse.getBody() );
+			mText.push_back( "Response: " +  s );
 			
 			mSession->close();
 		}

@@ -41,9 +41,9 @@ void HttpRequest::parseHeader( const string& header )
 		return;
 	}
 	size_t d	= header.find( sCrLf + sCrLf );
-	size_t l	= header.length();
+	size_t len	= header.length();
 	string h	= header;
-	if ( d < l ) {
+	if ( d < len ) {
 		h		= h.substr( 0, d );
 	}
 	

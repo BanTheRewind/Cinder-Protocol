@@ -99,13 +99,14 @@ void WebClientApp::onRead( ci::Buffer buffer )
 		buffer = HttpResponse::removeHeader( buffer );
 	}
 	mHttpResponse.append( buffer );
+
 	mSession->read();
 }
 
 void WebClientApp::onReadComplete()
 {
-	mText.push_back("Read complete" );
-		
+	mText.push_back( "Read complete" );
+	
 	console() << "HTTP version: ";
 	switch ( mHttpResponse.getHttpVersion() ) {
 		case HttpVersion::HTTP_0_9:
@@ -125,15 +126,15 @@ void WebClientApp::onReadComplete()
 	console() << "Status code: " << mHttpResponse.getStatusCode() << endl;
 	console() << "Reason: " << mHttpResponse.getReason() << endl;
 	
-	console() << "Headers: " << endl;
+	console() << "Header fields: " << endl;
 	for ( const KeyValuePair& kvp : mHttpResponse.getHeaders() ) {
 		console() << ">> " << kvp.first << ": " << kvp.second << endl;
 	}
 	console() << endl;
 	
-	console() << "Response buffer:" << endl;
-	console() << mHttpResponse << endl;
-	
+	console() << "Body:" << endl;
+	console() << HttpResponse::bufferToString( mHttpResponse.getBody() ) << endl;
+
 	mSession->close();
 }
 
