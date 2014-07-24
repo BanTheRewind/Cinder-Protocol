@@ -214,6 +214,12 @@
     <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\UdpServer.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\UdpSession.cpp" />
     <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\WaitTimer.cpp" />
+    <ClCompile Include="..\..\..\src\BodyInterface.cpp" />
+    <ClCompile Include="..\..\..\src\CommandInterface.cpp" />
+    <ClCompile Include="..\..\..\src\FtpInterface.cpp" />
+    <ClCompile Include="..\..\..\src\FtpRequest.cpp" />
+    <ClCompile Include="..\..\..\src\FtpResponse.cpp" />
+    <ClCompile Include="..\..\..\src\HeaderInterface.cpp" />
     <ClCompile Include="..\..\..\src\HttpInterface.cpp" />
     <ClCompile Include="..\..\..\src\HttpRequest.cpp" />
     <ClCompile Include="..\..\..\src\HttpResponse.cpp" />
@@ -249,6 +255,12 @@
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\UdpSessionEventHandlerInterface.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\WaitTimer.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\WaitTimerEventHandlerInterface.h" />
+    <ClInclude Include="..\..\..\src\BodyInterface.h" />
+    <ClInclude Include="..\..\..\src\CommandInterface.h" />
+    <ClInclude Include="..\..\..\src\FtpInterface.h" />
+    <ClInclude Include="..\..\..\src\FtpRequest.h" />
+    <ClInclude Include="..\..\..\src\FtpResponse.h" />
+    <ClInclude Include="..\..\..\src\HeaderInterface.h" />
     <ClInclude Include="..\..\..\src\HttpInterface.h" />
     <ClInclude Include="..\..\..\src\HttpRequest.h" />
     <ClInclude Include="..\..\..\src\HttpResponse.h" />
