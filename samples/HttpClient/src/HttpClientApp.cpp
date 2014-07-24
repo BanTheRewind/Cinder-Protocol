@@ -152,14 +152,13 @@ void HttpClientApp::onRead( ci::Buffer buffer )
 			}
 
 			// Save the file
-			ofstream file;
 			fs::path path = getAppPath();
 #if !defined ( CINDER_MSW )
 			path = path.parent_path();
 #endif
 			path = path / mFilename;
-			file.open( path.string().c_str(), ios::out | ios::trunc | ios::binary );
-			file.close();
+			OStreamFileRef file = writeFileStream( path );
+			file->write( mHttpResponse.getBody() );
 			
 			mText.push_back( mFilename + " downloaded" );
 		} else {
