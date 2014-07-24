@@ -147,7 +147,7 @@ string FtpInterface::commandToDescriptionString( FtpCommand c )
 		commands.push_back( "Send to terminal" );
 	}
 	if ( (size_t)c > commands.size() ) {
-		throw ExcCommandNotFound( "FTP command ID" + ci::toString( c ) +" is invalid" );
+		throw ExcCommandNotFound( ci::toString( c ) );
 	}
 	return commands.at( c );
 }
@@ -203,54 +203,25 @@ string FtpInterface::replyCodeToString( FtpReplyCode c )
 		replyCodes.push_back( "Requested action not taken: TYPE or STRU mismatch" );
 	}
 	if ( (size_t)c > replyCodes.size() ) {
-		throw ExcReplyCodeNotFound( "FTP reply code" + ci::toString( c ) +" is invalid" );
+		throw ExcReplyCodeNotFound( (size_t)c );
 	}
 	return replyCodes.at( c );
 }
 
-void FtpInterface::parse( const Buffer& buffer )
-{
-	string msg		= bufferToString( buffer );
-	size_t offset	= msg.find( sCrLf + sCrLf );
-	size_t sz		= buffer.getDataSize();
-	if ( offset < sz ) {
-		msg = msg.substr( 0, offset );
-		parseHeader( msg );
-
-		size_t len = sz - offset;
-		Buffer body( len );
-		char_traits<char>::copy( (char*)body.getData(), (char*)buffer.getData() + ( offset + 4 ), len );
-		mBody = body;
-	}
-}
-
 Buffer FtpInterface::toBuffer() const
 {
-	string header		= headerToString();
-	size_t headerLength	= header.size();
-	size_t bodyLength	= 0;
-	if ( mBody ) {
-		bodyLength		= mBody.getDataSize();
-	}
-	size_t sz			= headerLength + bodyLength;
-
-	Buffer buffer( sz );
-	char_traits<char>::copy( (char*)buffer.getData(), (char*)&header[ 0 ], headerLength );
-	if ( bodyLength > 0 ) {
-		char_traits<char>::copy( (char*)buffer.getData() + headerLength, (char*)mBody.getData(), bodyLength );
-	}
-
+	Buffer buffer;
 	return buffer;
 }
 
 string FtpInterface::toString() const
 {
-	string body		= "";
-	string header	= commandToString();
-	if ( mBody ) {
-		body		= bufferToString( mBody );
-	}
-	return header + body;
+	return "";
+}
+
+FtpInterface::ExcReplyCodeNotFound::ExcReplyCodeNotFound( size_t replyCode ) throw()
+{
+	sprintf( mMessage, "Reply code \"%u\" not found", replyCode );
 }
 
 ostream& operator<<( ostream& out, const FtpInterface& p )

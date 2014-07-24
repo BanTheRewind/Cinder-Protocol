@@ -11,6 +11,11 @@ typedef std::pair<std::string, std::string>	KeyValuePair;
 class ProtocolInterface
 {
 public:
+	//! Parses \a kvp into a key-value pair object.
+	static KeyValuePair	stringToKeyValuePair( const std::string& kvp, const std::string& delim = " " );
+	//! Returns string representation of key-value pair \a kvp.
+	static std::string	keyValuePairToString( const KeyValuePair& kvp, const std::string& delim = " " );
+
 	//! Return string \a value as Buffer.
 	static ci::Buffer		stringToBuffer( const std::string& value );
 	//! Returns string representation of \a buffer.
@@ -27,7 +32,7 @@ public:
 	class ExcKeyValuePairInvalid : public ci::Exception
 	{
 	public:
-		ExcKeyValuePairInvalid( const std::string &kvp ) throw();
+		ExcKeyValuePairInvalid( const std::string& kvp ) throw();
 		virtual const char* what() const throw()
 		{
 			return mMessage;

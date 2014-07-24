@@ -19,7 +19,7 @@ HeaderMap HeaderInterface::stringToHeaderMap( const string& h )
 	HeaderMap headerMap;
 	for ( vector<string>::const_iterator iter = tokens.begin(); iter != tokens.end(); ++iter ) {
 		if ( !iter->empty() ) {
-			KeyValuePair kvp = stringToKeyValuePair( *iter );
+			KeyValuePair kvp = stringToKeyValuePair( *iter, ":" );
 			headerMap.insert( kvp );
 		}
 	}
@@ -30,31 +30,9 @@ string HeaderInterface::headerMapToString( const HeaderMap& h )
 {
 	string headerMap = "";
 	for ( HeaderMap::const_iterator iter = h.begin(); iter != h.end(); ++iter ) {
-		headerMap += keyValuePairToString( *iter ) + sCrLf;
+		headerMap += keyValuePairToString( *iter, ":" ) + sCrLf;
 	}
 	return headerMap;
-}
-
-KeyValuePair HeaderInterface::stringToKeyValuePair( const string& kvp )
-{
-	vector<string> tokens;
-	boost::split( tokens, kvp, boost::is_any_of( ":" ) );
-	if ( tokens.size() < 2 ) {
-		throw ExcKeyValuePairInvalid( kvp );
-	} else {
-		string key		= boost::trim_copy( tokens.at( 0 ) );
-		tokens.erase( tokens.begin() );
-		string value	= boost::join( tokens, ":" );
-		value			= boost::trim_copy( value );
-	
-		KeyValuePair kvp( key, value );
-		return kvp;
-	}
-}
-
-string HeaderInterface::keyValuePairToString( const KeyValuePair& kvp )
-{
-	return kvp.first + ": " + kvp.second;
 }
 
 Buffer HeaderInterface::removeHeader( const Buffer& buffer )
@@ -145,10 +123,5 @@ string HeaderInterface::toString() const
 HeaderInterface::ExcHeaderNotFound::ExcHeaderNotFound( const string& field ) throw()
 {
 	sprintf( mMessage, "Header field \"%s\" not found", field.c_str() );
-}
-
-HeaderInterface::ExcKeyValuePairInvalid::ExcKeyValuePairInvalid( const string& kvp ) throw()
-{
-	sprintf( mMessage, "\"%s\" is not a valid key:value pair", kvp.c_str() );
 }
  

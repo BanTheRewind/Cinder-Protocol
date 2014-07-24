@@ -13,7 +13,7 @@ public:
 	void				setBody( const ci::Buffer& body );
 
 	//! Converts entire message to ci::Buffer.
-	virtual ci::Buffer		toBuffer() const;
+	virtual ci::Buffer	toBuffer() const;
 	//! Converts entire message to std::string.
 	virtual std::string	toString() const;
 protected:

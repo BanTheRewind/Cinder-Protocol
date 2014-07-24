@@ -11,9 +11,6 @@ enum : size_t
 class HttpInterface : public BodyInterface, public HeaderInterface
 {
 public:
-	//! Creates HTTP message with version \a v.
-	HttpInterface( HttpVersion v );
-	
 	//! Parses HTTP version from \a v.
 	static HttpVersion		stringToHttpVersion( const std::string& v );
 	//! Returns string representing HTTP version \a v.
@@ -45,6 +42,8 @@ public:
 		char mMessage[ 2048 ];
 	};
 protected:	
+	HttpInterface( HttpVersion v );
+
 	HttpVersion				mHttpVersion;
 
 	friend std::ostream&	operator<<( std::ostream& out, const HttpInterface& h );

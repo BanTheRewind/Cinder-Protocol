@@ -7,11 +7,6 @@ typedef std::map<std::string, std::string> HeaderMap;
 class HeaderInterface : public ProtocolInterface
 {
 public:
-	//! Parses \a kvp into a key-value pair object.
-	static KeyValuePair	stringToKeyValuePair( const std::string& kvp );
-	//! Returns string representation of key-value pair \a kvp.
-	static std::string	keyValuePairToString( const KeyValuePair& kvp );
-
 	//! Parses \a headerMap into a header map object.
 	static HeaderMap	stringToHeaderMap( const std::string& headerMap );
 	//! Return string representation of \a headerMap.
@@ -48,7 +43,7 @@ public:
 	class ExcHeaderNotFound : public ci::Exception
 	{
 	public:
-		ExcHeaderNotFound( const std::string &field ) throw();
+		ExcHeaderNotFound( const std::string& field ) throw();
 		virtual const char* what() const throw()
 		{
 			return mMessage;

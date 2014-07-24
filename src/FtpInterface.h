@@ -65,8 +65,6 @@ enum : size_t
 class FtpInterface : public BodyInterface, public CommandInterface
 {
 public:
-	FtpInterface();
-
 	//! Get string representing command \c.
 	static std::string		commandToString( FtpCommand c );
 	//! Get string representing description of command \c.
@@ -74,8 +72,6 @@ public:
 	//! Get string representing reply code \c.
 	static std::string		replyCodeToString( FtpReplyCode c );
 
-	//! Parses \a buffer to commands and body.
-	void					parse( const ci::Buffer& buffer );
 	//! Converts entire message to ci::Buffer.
 	ci::Buffer				toBuffer() const;
 	//! Converts entire message to std::string.
@@ -85,7 +81,7 @@ public:
 	class ExcReplyCodeNotFound : public ci::Exception
 	{
 	public:
-		ExcReplyCodeNotFound( const std::string &replyCode ) throw();
+		ExcReplyCodeNotFound( size_t replyCode ) throw();
 		virtual const char* what() const throw()
 		{
 			return mMessage;
@@ -93,6 +89,8 @@ public:
 	private:
 		char mMessage[ 2048 ];
 	};
+protected:
+	FtpInterface();
 
 	friend std::ostream&	operator<<( std::ostream& out, const FtpInterface& h );
 };
