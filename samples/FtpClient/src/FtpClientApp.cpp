@@ -96,6 +96,7 @@ void FtpClientApp::onRead( ci::Buffer buffer )
 	switch ( mFtpResponse.getReplyCode() ) {
 	case FtpReplyCode_220_SERVICE_READY_FOR_NEW_USER:
 		mFtpRequest.set( FtpCommand_USER, "****" );
+		// TODO get toBuffer to work here
 		mSession->write( FtpRequest::stringToBuffer( mFtpRequest.toString() ) );
 		break;
 	case FtpReplyCode_230_USER_LOGGED_IN_PROCEED:
@@ -103,6 +104,7 @@ void FtpClientApp::onRead( ci::Buffer buffer )
 		break;
 	case FtpReplyCode_331_USER_NAME_OKAY_NEED_PASSWORD:
 		mFtpRequest.set( FtpCommand_PASS, "****" );
+		// TODO get toBuffer to work here
 		mSession->write( FtpRequest::stringToBuffer( mFtpRequest.toString() ) );
 		break;
 	default:
