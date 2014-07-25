@@ -5,8 +5,8 @@
 
 #include "boost/algorithm/string.hpp"
 
-#include "HttpRequest.h"
-#include "HttpResponse.h"
+#include "FtpRequest.h"
+#include "FtpResponse.h"
 #include "TcpClient.h"
 
 class FtpClientApp : public ci::app::AppBasic 
@@ -20,12 +20,8 @@ private:
 	TcpSessionRef				mSession;
 	std::string					mHost;
 	
-	size_t						mBytesRead;
-	size_t						mContentLength;
-	std::string					mFilename;
-	int32_t						mIndex;
-	HttpRequest					mHttpRequest;
-	HttpResponse				mHttpResponse;
+	FtpRequest					mFtpRequest;
+	FtpResponse					mFtpResponse;
 	
 	void						write();
 	
@@ -72,7 +68,6 @@ void FtpClientApp::onClose()
 
 void FtpClientApp::onConnect( TcpSessionRef session )
 {
-	mHttpResponse	= HttpResponse();
 	mSession		= session;
 	mText.push_back( "Connected" );
 	
@@ -81,9 +76,7 @@ void FtpClientApp::onConnect( TcpSessionRef session )
 	mSession->connectReadEventHandler( &FtpClientApp::onRead, this );
 	mSession->connectWriteEventHandler( &FtpClientApp::onWrite, this );
 	
-	console() << mHttpRequest << endl;
-	
-	mSession->write( mHttpRequest.toBuffer() );
+	mSession->write( mFtpRequest.toBuffer() );
 }
 
 void FtpClientApp::onError( string err, size_t bytesTransferred )
@@ -97,79 +90,7 @@ void FtpClientApp::onError( string err, size_t bytesTransferred )
 
 void FtpClientApp::onRead( ci::Buffer buffer )
 {
-	size_t sz	= buffer.getDataSize();
-	mBytesRead	+= sz;
-	mText.push_back( toString( sz ) + " bytes read" );
-	
-	if ( !mHttpResponse.hasHeader() ) {
-		
-		// Parse header
-		mHttpResponse.parseHeader( HttpResponse::bufferToString( buffer ) );
-		buffer = HttpResponse::removeHeader( buffer );
-		
-		// Get content-length
-		for ( const KeyValuePair& kvp : mHttpResponse.getHeaders() ) {
-			if ( kvp.first == "Content-Length" ) {
-				mContentLength = fromString<size_t>( kvp.second );
-				break;
-			}
-		}
-	}
-	
-	// Append buffer to body
-	mHttpResponse.append( buffer );
-	
-	if ( mBytesRead < mContentLength ) {
-		
-		// Keep reading until we hit the content length
-		mSession->read();
-	} else {
-
-		mText.push_back( "Read complete" );
-		mText.push_back( toString( mHttpResponse.getStatusCode() ) + " " + mHttpResponse.getReason() );
-		
-		if ( mHttpResponse.getStatusCode() == 200 ) {
-			for ( const KeyValuePair& kvp : mHttpResponse.getHeaders() ) {
-				
-				// Choose file extension based on MIME type
-				if ( kvp.first == "Content-Type" ) {
-					string mime = kvp.second;
-					
-					if ( mime == "audio/mp3" ) {
-						mFilename += ".mp3";
-					} else if ( mime == "image/jpeg" ) {
-						mFilename += ".jpg";
-					} else if ( mime == "image/png" ) {
-						mFilename += ".png";
-					}
-				} else if ( kvp.first == "Connection" ) {
-					
-					// Close connection if requested by server
-					if ( kvp.second == "close" ) {
-						mSession->close();
-					}
-				}
-			}
-
-			// Save the file
-			ofstream file;
-			fs::path path = getAppPath();
-#if !defined ( CINDER_MSW )
-			path = path.parent_path();
-#endif
-			path = path / mFilename;
-			file.open( path.string().c_str(), ios::out | ios::trunc | ios::binary );
-			file.close();
-			
-			mText.push_back( mFilename + " downloaded" );
-		} else {
-			
-			// Write error
-			mText.push_back( "Response: " +  HttpResponse::bufferToString( mHttpResponse.getBody() ) );
-			
-			mSession->close();
-		}
-	}
+	mSession->close();
 }
 
 void FtpClientApp::onResolve()
@@ -187,22 +108,14 @@ void FtpClientApp::setup()
 {
 	gl::enable( GL_TEXTURE_2D );
 	
-	mBytesRead		= 0;
-	mContentLength	= 0;
 	mFont			= Font( "Georgia", 24 );
 	mFrameRate		= 0.0f;
 	mFullScreen		= false;
 	mHost			= "127.0.0.1";
-	mIndex			= 0;
 	
-	mHttpRequest = HttpRequest( "GET", "/", HttpVersion::HTTP_1_1 );
-	mHttpRequest.setHeader( "Host",			mHost );
-	mHttpRequest.setHeader( "Accept",		"*/*" );
-
 	mParams = params::InterfaceGl::create( "Params", Vec2i( 200, 150 ) );
 	mParams->addParam( "Frame rate",	&mFrameRate,			"", true );
 	mParams->addParam( "Full screen",	&mFullScreen,			"key=f" );
-	mParams->addParam( "Image index",	&mIndex,				"min=0 max=3 step=1 keyDecr=i keyIncr=I" );
 	mParams->addParam( "Host",			&mHost );
 	mParams->addButton( "Write",		[ & ]() { write(); },	"key=w" );
 	mParams->addButton( "Quit",			[ & ]() { quit(); },	"key=q" );
@@ -247,20 +160,9 @@ void FtpClientApp::write()
 		return;
 	}
 	
-	// Reset download stats
-	mBytesRead		= 0;
-	mContentLength	= 0;
+	mText.push_back( "Connecting to:\n" + mHost + ":21" );
 	
-	// Update request body
-	string index	= toString( mIndex );
-	mFilename		= index;
-	Buffer body		= HttpRequest::stringToBuffer( index );
-	mHttpRequest.setBody( body );
-	
-	mText.push_back( "Connecting to:\n" + mHost + ":2000" );
-	
-	// Ports <1024 are restricted to root
-	mClient->connect( mHost, 2000 );
+	mClient->connect( mHost, 21 );
 }
 
 CINDER_APP_BASIC( FtpClientApp, RendererGl )

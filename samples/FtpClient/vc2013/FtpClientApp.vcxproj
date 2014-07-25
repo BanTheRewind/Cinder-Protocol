@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{74202EDD-91D2-4D2A-B0B6-355CEB16E6BE}</ProjectGuid>
-    <RootNamespace>HttpServerApp</RootNamespace>
+    <RootNamespace>FtpClientApp</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -216,14 +216,14 @@
     <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\WaitTimer.cpp" />
     <ClCompile Include="..\..\..\src\BodyInterface.cpp" />
     <ClCompile Include="..\..\..\src\FtpRequest.cpp" />
+    <ClCompile Include="..\..\..\src\KeyValuePairInterface.cpp" />
     <ClCompile Include="..\..\..\src\FtpResponse.cpp" />
     <ClCompile Include="..\..\..\src\HeaderInterface.cpp" />
     <ClCompile Include="..\..\..\src\HttpInterface.cpp" />
     <ClCompile Include="..\..\..\src\HttpRequest.cpp" />
     <ClCompile Include="..\..\..\src\HttpResponse.cpp" />
-    <ClCompile Include="..\..\..\src\KeyValuePairInterface.cpp" />
     <ClCompile Include="..\..\..\src\ProtocolInterface.cpp" />
-    <ClCompile Include="..\src\HttpServerApp.cpp" />
+    <ClCompile Include="..\src\FtpClientApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\resources\cinder_app_icon.ico" />
@@ -256,12 +256,12 @@
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\WaitTimerEventHandlerInterface.h" />
     <ClInclude Include="..\..\..\src\BodyInterface.h" />
     <ClInclude Include="..\..\..\src\FtpRequest.h" />
+    <ClInclude Include="..\..\..\src\KeyValuePairInterface.h" />
     <ClInclude Include="..\..\..\src\FtpResponse.h" />
     <ClInclude Include="..\..\..\src\HeaderInterface.h" />
     <ClInclude Include="..\..\..\src\HttpInterface.h" />
     <ClInclude Include="..\..\..\src\HttpRequest.h" />
     <ClInclude Include="..\..\..\src\HttpResponse.h" />
-    <ClInclude Include="..\..\..\src\KeyValuePairInterface.h" />
     <ClInclude Include="..\..\..\src\ProtocolInterface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

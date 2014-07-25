@@ -24,7 +24,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\HttpServerApp.cpp">
+    <ClCompile Include="..\src\FtpClientApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\ClientInterface.cpp">
@@ -63,12 +63,6 @@
     <ClCompile Include="..\..\..\src\BodyInterface.cpp">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\FtpRequest.cpp">
-      <Filter>Blocks\Cinder-Protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\FtpResponse.cpp">
-      <Filter>Blocks\Cinder-Protocol</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\HeaderInterface.cpp">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClCompile>
@@ -81,10 +75,16 @@
     <ClCompile Include="..\..\..\src\HttpResponse.cpp">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\KeyValuePairInterface.cpp">
+    <ClCompile Include="..\..\..\src\ProtocolInterface.cpp">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\ProtocolInterface.cpp">
+    <ClCompile Include="..\..\..\src\FtpRequest.cpp">
+      <Filter>Blocks\Cinder-Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\FtpResponse.cpp">
+      <Filter>Blocks\Cinder-Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\KeyValuePairInterface.cpp">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClCompile>
   </ItemGroup>
@@ -168,12 +168,6 @@
     <ClInclude Include="..\..\..\src\BodyInterface.h">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\FtpRequest.h">
-      <Filter>Blocks\Cinder-Protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\FtpResponse.h">
-      <Filter>Blocks\Cinder-Protocol</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\HeaderInterface.h">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClInclude>
@@ -186,10 +180,16 @@
     <ClInclude Include="..\..\..\src\HttpResponse.h">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\KeyValuePairInterface.h">
+    <ClInclude Include="..\..\..\src\ProtocolInterface.h">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\ProtocolInterface.h">
+    <ClInclude Include="..\..\..\src\FtpRequest.h">
+      <Filter>Blocks\Cinder-Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\FtpResponse.h">
+      <Filter>Blocks\Cinder-Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\KeyValuePairInterface.h">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClInclude>
   </ItemGroup>

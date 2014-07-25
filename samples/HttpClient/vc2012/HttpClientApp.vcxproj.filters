@@ -63,12 +63,6 @@
     <ClCompile Include="..\..\..\src\BodyInterface.cpp">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\CommandInterface.cpp">
-      <Filter>Blocks\Cinder-Protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\FtpInterface.cpp">
-      <Filter>Blocks\Cinder-Protocol</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\FtpRequest.cpp">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClCompile>
@@ -85,6 +79,9 @@
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\HttpResponse.cpp">
+      <Filter>Blocks\Cinder-Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\KeyValuePairInterface.cpp">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\ProtocolInterface.cpp">
@@ -171,12 +168,6 @@
     <ClInclude Include="..\..\..\src\BodyInterface.h">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\CommandInterface.h">
-      <Filter>Blocks\Cinder-Protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\FtpInterface.h">
-      <Filter>Blocks\Cinder-Protocol</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\FtpRequest.h">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClInclude>
@@ -193,6 +184,9 @@
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\HttpResponse.h">
+      <Filter>Blocks\Cinder-Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\KeyValuePairInterface.h">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\ProtocolInterface.h">
