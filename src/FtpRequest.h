@@ -1,6 +1,6 @@
 #pragma once
 
-#include "KeyValuePairInterface.h"
+#include "FtpInterface.h"
 
 enum : size_t
 {
@@ -66,7 +66,7 @@ enum : size_t
 	FtpCommand_XSEN
 } typedef FtpCommand;
 
-class FtpRequest : public KeyValuePairInterface
+class FtpRequest : public FtpInterface
 {
 public:
 	//! Creates a FTP request with command \a command and value \a value.
@@ -90,7 +90,7 @@ public:
 	//! Sets command to FtpCommand \a c and value to \a v.
 	void				set( FtpCommand c, const std::string& v );
 
-	//! Exception representing missing FTP command.
+	//! Exception representing missing or inavlid FTP command.
 	class ExcCommandNotFound : public ci::Exception
 	{
 	public:

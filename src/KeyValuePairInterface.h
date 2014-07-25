@@ -16,7 +16,7 @@ public:
 	//! Converts message to ci::Buffer.
 	ci::Buffer				toBuffer() const;
 	//! Converts message to string.
-	std::string				toString() const;
+	virtual std::string		toString() const;
 protected:
 	KeyValuePairInterface( const std::string& key = "", const std::string& value = "" );
 

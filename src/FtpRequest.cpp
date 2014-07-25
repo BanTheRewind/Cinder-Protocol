@@ -6,7 +6,7 @@ using namespace ci;
 using namespace std;
 
 FtpRequest::FtpRequest( const string& command, const string& value )
-: KeyValuePairInterface( command, value )
+: FtpInterface( command, value )
 {
 }
  

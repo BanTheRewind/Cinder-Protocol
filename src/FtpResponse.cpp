@@ -6,12 +6,12 @@ using namespace ci;
 using namespace std;
 
 FtpResponse::FtpResponse( FtpReplyCode replyCode, const string& value )
-: KeyValuePairInterface( ci::toString( (size_t)replyCode ), value )
+: FtpInterface( ci::toString( (size_t)replyCode ), value )
 {
 }
 
 FtpResponse::FtpResponse( size_t replyCode, const string& value )
-: KeyValuePairInterface( ci::toString( replyCode ), value )
+: FtpInterface( ci::toString( replyCode ), value )
 {
 }
 

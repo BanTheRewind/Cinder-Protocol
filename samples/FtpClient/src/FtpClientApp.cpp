@@ -76,7 +76,7 @@ void FtpClientApp::onConnect( TcpSessionRef session )
 	mSession->connectReadEventHandler( &FtpClientApp::onRead, this );
 	mSession->connectWriteEventHandler( &FtpClientApp::onWrite, this );
 	
-	mSession->write( mFtpRequest.toBuffer() );
+	mSession->read();
 }
 
 void FtpClientApp::onError( string err, size_t bytesTransferred )
@@ -95,12 +95,15 @@ void FtpClientApp::onRead( ci::Buffer buffer )
 
 	switch ( mFtpResponse.getReplyCode() ) {
 	case FtpReplyCode_220_SERVICE_READY_FOR_NEW_USER:
-		mFtpRequest.set( FtpCommand_USER, "" );
-		mSession->write( mFtpRequest.toBuffer() );
+		mFtpRequest.set( FtpCommand_USER, "****" );
+		mSession->write( FtpRequest::stringToBuffer( mFtpRequest.toString() ) );
+		break;
+	case FtpReplyCode_230_USER_LOGGED_IN_PROCEED:
+		// TODO open data connection here
 		break;
 	case FtpReplyCode_331_USER_NAME_OKAY_NEED_PASSWORD:
-		mFtpRequest.set( FtpCommand_PASS, "" );
-		mSession->write( mFtpRequest.toBuffer() );
+		mFtpRequest.set( FtpCommand_PASS, "****" );
+		mSession->write( FtpRequest::stringToBuffer( mFtpRequest.toString() ) );
 		break;
 	default:
 		mSession->close();
@@ -116,7 +119,7 @@ void FtpClientApp::onResolve()
 void FtpClientApp::onWrite( size_t bytesTransferred )
 {
 	mText.push_back( mFtpRequest.toString() );
-	mSession->read();
+	mSession->read( "\r\n" );
 }
 
 void FtpClientApp::setup()

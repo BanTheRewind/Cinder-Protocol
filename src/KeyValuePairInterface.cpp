@@ -41,12 +41,7 @@ void KeyValuePairInterface::parse( const Buffer& buffer )
 
 Buffer KeyValuePairInterface::toBuffer() const
 {
-	Buffer buffer;
-	if ( !mKeyValuePair.first.empty() ) {
-		string s = keyValuePairToString( mKeyValuePair );
-		buffer = stringToBuffer( s );
-	}
-	return buffer;
+	return stringToBuffer( toString() );
 }
 
 string KeyValuePairInterface::toString() const

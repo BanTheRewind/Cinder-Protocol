@@ -1,6 +1,6 @@
 #pragma once
 
-#include "KeyValuePairInterface.h"
+#include "FtpInterface.h"
 
 enum : size_t
 {
@@ -51,7 +51,7 @@ enum : size_t
 	FtpReplyCode_555_REQUESTED_ACTION_NOT_TAKEN_TYPE_OR_STRU_MISMATCH = 555
 } typedef FtpReplyCode;
 
-class FtpResponse : public KeyValuePairInterface
+class FtpResponse : public FtpInterface
 {
 public:
 	//! Creates a FTP response with reply code \a replyCode and value \a value.
