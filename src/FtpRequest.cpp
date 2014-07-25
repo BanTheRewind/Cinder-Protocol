@@ -152,6 +152,40 @@ string FtpRequest::getCommandDescription( FtpCommand c )
 	return commands.at( c );
 }
 
+FtpCommand FtpRequest::getCommand() const
+{
+	size_t c = fromString<size_t>( mKeyValuePair.first );
+	if ( c > FtpCommand_XSEN ) {
+		throw ExcCommandNotFound( "FTP command ID " + ci::toString( c ) + " not found." );
+	}
+	return (FtpCommand)c;
+}
+
+const string& FtpRequest::getCommandString() const
+{
+	return mKeyValuePair.first;
+}
+
+void FtpRequest::setCommand( const string& c )
+{
+	mKeyValuePair.first = c;
+}
+
+void FtpRequest::setCommand( FtpCommand c )
+{
+	mKeyValuePair.first = getCommandString( c );
+}
+
+void FtpRequest::set( const string& c, const string& v )
+{
+	mKeyValuePair = make_pair( c, v );
+}
+
+void FtpRequest::set( FtpCommand c, const string& v )
+{
+	mKeyValuePair = make_pair( getCommandString( c ), v );
+}
+
 FtpRequest::ExcCommandNotFound::ExcCommandNotFound( const string& msg ) throw()
 {
 	sprintf( mMessage, msg.c_str() );

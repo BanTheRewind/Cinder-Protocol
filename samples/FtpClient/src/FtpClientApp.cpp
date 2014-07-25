@@ -90,7 +90,22 @@ void FtpClientApp::onError( string err, size_t bytesTransferred )
 
 void FtpClientApp::onRead( ci::Buffer buffer )
 {
-	mSession->close();
+	mFtpResponse.parse( buffer );
+	mText.push_back( mFtpResponse.toString() );
+
+	switch ( mFtpResponse.getReplyCode() ) {
+	case FtpReplyCode_220_SERVICE_READY_FOR_NEW_USER:
+		mFtpRequest.set( FtpCommand_USER, "" );
+		mSession->write( mFtpRequest.toBuffer() );
+		break;
+	case FtpReplyCode_331_USER_NAME_OKAY_NEED_PASSWORD:
+		mFtpRequest.set( FtpCommand_PASS, "" );
+		mSession->write( mFtpRequest.toBuffer() );
+		break;
+	default:
+		mSession->close();
+		break;
+	}
 }
 
 void FtpClientApp::onResolve()
@@ -100,7 +115,7 @@ void FtpClientApp::onResolve()
 
 void FtpClientApp::onWrite( size_t bytesTransferred )
 {
-	mText.push_back(toString( bytesTransferred ) + " bytes written" );
+	mText.push_back( mFtpRequest.toString() );
 	mSession->read();
 }
 
@@ -111,8 +126,8 @@ void FtpClientApp::setup()
 	mFont			= Font( "Georgia", 24 );
 	mFrameRate		= 0.0f;
 	mFullScreen		= false;
-	mHost			= "127.0.0.1";
-	
+	mHost			= "www.bantherewind.com";
+
 	mParams = params::InterfaceGl::create( "Params", Vec2i( 200, 150 ) );
 	mParams->addParam( "Frame rate",	&mFrameRate,			"", true );
 	mParams->addParam( "Full screen",	&mFullScreen,			"key=f" );

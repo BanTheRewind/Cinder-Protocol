@@ -5,7 +5,7 @@
 using namespace ci;
 using namespace std;
 
-FtpResponse::FtpResponse( FtpResponse::FtpReplyCode replyCode, const string& value )
+FtpResponse::FtpResponse( FtpReplyCode replyCode, const string& value )
 : KeyValuePairInterface( ci::toString( (size_t)replyCode ), value )
 {
 }
@@ -16,7 +16,7 @@ FtpResponse::FtpResponse( size_t replyCode, const string& value )
 }
 
 
-string FtpResponse::getReplyCodeDescription( FtpResponse::FtpReplyCode c )
+string FtpResponse::getReplyCodeDescription( FtpReplyCode c )
 {
 	static vector<string> replyCodes;
 	if ( replyCodes.empty() ) {
@@ -77,7 +77,7 @@ size_t FtpResponse::getReplyCode() const
 	return fromString<size_t>( mKeyValuePair.first );
 }
 
-void FtpResponse::setReplyCode( FtpResponse::FtpReplyCode c )
+void FtpResponse::setReplyCode( FtpReplyCode c )
 {
 	mKeyValuePair.first = ci::toString( (size_t)c );
 }
