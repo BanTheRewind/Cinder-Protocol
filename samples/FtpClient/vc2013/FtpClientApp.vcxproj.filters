@@ -90,6 +90,15 @@
     <ClCompile Include="..\..\..\src\FtpInterface.cpp">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\TcpClientEventHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\TcpSessionEventHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\TcpClientConnection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\resources\cinder_app_icon.ico">
@@ -197,6 +206,15 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\FtpInterface.h">
       <Filter>Blocks\Cinder-Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\TcpClientEventHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\TcpSessionEventHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\TcpClientConnection.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -7,7 +7,8 @@
 
 #include "FtpRequest.h"
 #include "FtpResponse.h"
-#include "TcpClient.h"
+
+#include "TcpClientConnection.h"
 
 class FtpClientApp : public ci::app::AppBasic 
 {
@@ -16,21 +17,11 @@ public:
 	void						setup();
 	void						update();
 private:
-	TcpClientRef				mClient;
-	TcpSessionRef				mSession;
+	TcpClientConnectionRef		mConnectionControl;
 	std::string					mHost;
 	
 	FtpRequest					mFtpRequest;
 	FtpResponse					mFtpResponse;
-	
-	void						write();
-	
-	void						onClose();
-	void						onConnect( TcpSessionRef session );
-	void						onError( std::string err, size_t bytesTransferred );
-	void						onRead( ci::Buffer buffer );
-	void						onResolve();
-	void						onWrite( size_t bytesTransferred );
 	
 	ci::Font					mFont;
 	std::vector<std::string>	mText;
@@ -61,69 +52,6 @@ void FtpClientApp::draw()
 	mParams->draw();
 }
 
-void FtpClientApp::onClose()
-{
-	mText.push_back( "Disconnected" );
-}
-
-void FtpClientApp::onConnect( TcpSessionRef session )
-{
-	mSession		= session;
-	mText.push_back( "Connected" );
-	
-	mSession->connectCloseEventHandler( &FtpClientApp::onClose, this );
-	mSession->connectErrorEventHandler( &FtpClientApp::onError, this );
-	mSession->connectReadEventHandler( &FtpClientApp::onRead, this );
-	mSession->connectWriteEventHandler( &FtpClientApp::onWrite, this );
-	
-	mSession->read();
-}
-
-void FtpClientApp::onError( string err, size_t bytesTransferred )
-{
-	string text = "Error";
-	if ( !err.empty() ) {
-		text += ": " + err;
-	}
-	mText.push_back( text );
-}
-
-void FtpClientApp::onRead( ci::Buffer buffer )
-{
-	mFtpResponse.parse( buffer );
-	mText.push_back( mFtpResponse.toString() );
-
-	switch ( mFtpResponse.getReplyCode() ) {
-	case FtpReplyCode_220_SERVICE_READY_FOR_NEW_USER:
-		mFtpRequest.set( FtpCommand_USER, "****" );
-		// TODO get toBuffer to work here
-		mSession->write( FtpRequest::stringToBuffer( mFtpRequest.toString() ) );
-		break;
-	case FtpReplyCode_230_USER_LOGGED_IN_PROCEED:
-		// TODO open data connection here
-		break;
-	case FtpReplyCode_331_USER_NAME_OKAY_NEED_PASSWORD:
-		mFtpRequest.set( FtpCommand_PASS, "****" );
-		// TODO get toBuffer to work here
-		mSession->write( FtpRequest::stringToBuffer( mFtpRequest.toString() ) );
-		break;
-	default:
-		mSession->close();
-		break;
-	}
-}
-
-void FtpClientApp::onResolve()
-{
-	mText.push_back( "Endpoint resolved" );
-}
-
-void FtpClientApp::onWrite( size_t bytesTransferred )
-{
-	mText.push_back( mFtpRequest.toString() );
-	mSession->read( "\r\n" );
-}
-
 void FtpClientApp::setup()
 {
 	gl::enable( GL_TEXTURE_2D );
@@ -131,19 +59,15 @@ void FtpClientApp::setup()
 	mFont			= Font( "Georgia", 24 );
 	mFrameRate		= 0.0f;
 	mFullScreen		= false;
-	mHost			= "www.bantherewind.com";
-
-	mParams = params::InterfaceGl::create( "Params", Vec2i( 200, 150 ) );
+	
+	mParams = params::InterfaceGl::create( "Params", Vec2i( 200, 120 ) );
 	mParams->addParam( "Frame rate",	&mFrameRate,			"", true );
 	mParams->addParam( "Full screen",	&mFullScreen,			"key=f" );
-	mParams->addParam( "Host",			&mHost );
-	mParams->addButton( "Write",		[ & ]() { write(); },	"key=w" );
 	mParams->addButton( "Quit",			[ & ]() { quit(); },	"key=q" );
 	
-	mClient = TcpClient::create( io_service() );
-	mClient->connectConnectEventHandler( &FtpClientApp::onConnect, this );
-	mClient->connectErrorEventHandler( &FtpClientApp::onError, this );
-	mClient->connectResolveEventHandler( &FtpClientApp::onResolve, this );
+	mConnectionControl = TcpClientConnection::create( io_service() );
+
+	mConnectionControl->connect( "www.bantherewind.com", 21 );
 }
 
 void FtpClientApp::update()
@@ -172,17 +96,38 @@ void FtpClientApp::update()
 			mText.erase( mText.begin() );
 		}
 	}
-}
 
-void FtpClientApp::write()
-{
-	if ( mSession && mSession->getSocket()->is_open() ) {
-		return;
+	if ( mConnectionControl->isConnected()	&& 
+		 mConnectionControl->getBuffer()	&& 
+		 mConnectionControl->getBuffer().getDataSize() > 0 ) {
+		const Buffer& buffer = mConnectionControl->getBuffer();
+
+		string s = SessionInterface::bufferToString( buffer );
+
+		mFtpResponse.parse( buffer );
+		mText.push_back( mFtpResponse.toString() );
+
+		switch ( mFtpResponse.getReplyCode() ) {
+		case FtpReplyCode_220_SERVICE_READY_FOR_NEW_USER:
+			mFtpRequest.set( FtpCommand_USER, "****" );
+			mText.push_back( mFtpRequest.toString() );
+			// TODO get toBuffer to work here
+			mConnectionControl->write( FtpRequest::stringToBuffer( mFtpRequest.toString() ) );
+			break;
+		case FtpReplyCode_230_USER_LOGGED_IN_PROCEED:
+			// TODO open data connection here
+			break;
+		case FtpReplyCode_331_USER_NAME_OKAY_NEED_PASSWORD:
+			mFtpRequest.set( FtpCommand_PASS, "****" );
+			// TODO get toBuffer to work here
+			mText.push_back( mFtpRequest.toString() );
+			mConnectionControl->write( FtpRequest::stringToBuffer( mFtpRequest.toString() ) );
+			break;
+		default:
+			mConnectionControl->close();
+			break;
+		}
 	}
-	
-	mText.push_back( "Connecting to:\n" + mHost + ":21" );
-	
-	mClient->connect( mHost, 21 );
 }
 
 CINDER_APP_BASIC( FtpClientApp, RendererGl )
