@@ -82,14 +82,8 @@ void TcpClientConnection::write( const Buffer& buffer )
 	}
 }
 
-#include "TcpSession.h"
-
 const Buffer& TcpClientConnection::getBuffer() const
 {
-	if ( mSessionEventHandler.getBuffer() && mSessionEventHandler.getBuffer().getDataSize() > 0 ) {
-		string s = TcpSession::bufferToString( mSessionEventHandler.getBuffer() );
-		console() << s << endl;
-	}
 	return mSessionEventHandler.getBuffer();
 }
 

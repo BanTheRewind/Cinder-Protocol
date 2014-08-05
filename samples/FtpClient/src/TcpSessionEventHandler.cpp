@@ -77,7 +77,13 @@ void TcpSessionEventHandler::onError( string err, size_t bytesTransferred )
 
 void TcpSessionEventHandler::onRead( Buffer buffer )
 {
-	mBuffer	= buffer;
+	size_t len = buffer.getDataSize();
+	if ( !mBuffer ) {
+		mBuffer = Buffer( len );
+	} else {
+		mBuffer.resize( mBuffer.getDataSize() + len );
+	}
+	mBuffer.copyFrom( buffer.getData(), len );
 	mError	= "";
 }
 

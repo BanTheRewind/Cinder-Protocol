@@ -102,8 +102,8 @@ void FtpClientApp::update()
 		 mConnectionControl->getBuffer().getDataSize() > 0 ) {
 		const Buffer& buffer = mConnectionControl->getBuffer();
 
-		string s = SessionInterface::bufferToString( buffer );
-
+		string s = ProtocolInterface::bufferToString( buffer );
+		
 		mFtpResponse.parse( buffer );
 		mText.push_back( mFtpResponse.toString() );
 
@@ -112,7 +112,7 @@ void FtpClientApp::update()
 			mFtpRequest.set( FtpCommand_USER, "****" );
 			mText.push_back( mFtpRequest.toString() );
 			// TODO get toBuffer to work here
-			mConnectionControl->write( FtpRequest::stringToBuffer( mFtpRequest.toString() ) );
+			mConnectionControl->write( mFtpRequest.toBuffer() );
 			break;
 		case FtpReplyCode_230_USER_LOGGED_IN_PROCEED:
 			// TODO open data connection here
@@ -121,7 +121,7 @@ void FtpClientApp::update()
 			mFtpRequest.set( FtpCommand_PASS, "****" );
 			// TODO get toBuffer to work here
 			mText.push_back( mFtpRequest.toString() );
-			mConnectionControl->write( FtpRequest::stringToBuffer( mFtpRequest.toString() ) );
+			mConnectionControl->write( mFtpRequest.toBuffer() );
 			break;
 		default:
 			mConnectionControl->close();

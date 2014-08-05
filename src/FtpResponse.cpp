@@ -126,6 +126,6 @@ void FtpResponse::setReplyCode( size_t c )
 
 FtpResponse::ExcReplyCodeNotFound::ExcReplyCodeNotFound( size_t replyCode ) throw()
 {
-	sprintf( mMessage, "Reply code \"%u\" not found", replyCode );
+	sprintf( mMessage, "Reply code \"%zu\" not found", replyCode );
 }
  
