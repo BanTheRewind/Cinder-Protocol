@@ -88,8 +88,10 @@ string ProtocolInterface::bufferToString( const Buffer& buffer )
 
 void ProtocolInterface::parse( const string& msg )
 {
-	Buffer buffer( (char*)&msg[ 0 ], msg.length() );
-	parse( buffer );
+	if ( !msg.empty() ) { 
+		Buffer buffer( (char*)&msg[ 0 ], msg.length() );
+		parse( buffer );
+	}
 }
 
 ProtocolInterface::ExcKeyValuePairInvalid::ExcKeyValuePairInvalid( const string& kvp ) throw()
