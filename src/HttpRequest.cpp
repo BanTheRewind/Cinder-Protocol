@@ -38,6 +38,7 @@
 #include "HttpRequest.h"
 
 #include "boost/algorithm/string.hpp"
+#include <vector>
 
 using namespace ci;
 using namespace std;
