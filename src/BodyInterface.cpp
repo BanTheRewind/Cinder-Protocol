@@ -35,51 +35,55 @@
 * 
 */
 
-#pragma once
+#include "BodyInterface.h"
 
-#include "cinder/Buffer.h"
-#include "cinder/Exception.h"
-#include <map>
-#include <string>
-#include <ostream>
+#include "boost/algorithm/string.hpp"
+#include "cinder/Utilities.h"
+#include <vector>
 
-typedef std::pair<std::string, std::string>	KeyValuePair;
+using namespace ci;
+using namespace std;
 
-class ProtocolInterface
+BodyInterface::BodyInterface()
+: ProtocolInterface()
 {
-public:
-	//! Parses \a kvp into a key-value pair object.
-	static KeyValuePair		stringToKeyValuePair( const std::string& kvp, const std::string& delim = " " );
-	//! Returns string representation of key-value pair \a kvp.
-	static std::string		keyValuePairToString( const KeyValuePair& kvp, const std::string& delim = " " );
+}
 
-	//! Return string \a value as Buffer.
-	static ci::Buffer		stringToBuffer( const std::string& value );
-	//! Returns string representation of \a buffer.
-	static std::string		bufferToString( const ci::Buffer& buffer );
-	
-	virtual ci::Buffer		toBuffer() const = 0;
-	virtual std::string		toString() const = 0;
+void BodyInterface::append( const ci::Buffer& buffer )
+{
+	size_t sz	= 0;
+	size_t len	= buffer.getDataSize();
+	if ( mBody ) {
+		sz = mBody.getDataSize();
+		mBody.resize( sz + len );
+	} else {
+		mBody = Buffer( len );
+	}
+	char_traits<char>::copy( (char*)mBody.getData() + sz, (char*)buffer.getData(), len );
+}
 
-	//! Parses \a msg into relevant commands, field, body, etc.
-	void					parse( const std::string& msg );
-	virtual void			parse( const ci::Buffer& buffer ) = 0;
+const Buffer& BodyInterface::getBody() const
+{
+	return mBody;
+}
 
-	//! Exception representing invalid key-value pair
-	class ExcKeyValuePairInvalid : public ci::Exception
-	{
-	public:
-		ExcKeyValuePairInvalid( const std::string& kvp ) throw();
-		virtual const char* what() const throw()
-		{
-			return mMessage;
-		}
-	private:
-		char mMessage[ 2048 ];
-	};
-protected:
-	ProtocolInterface();
-	
-	static std::string		sCrLf;
-};
- 
+void BodyInterface::setBody( const Buffer& body )
+{
+	size_t sz = body.getDataSize();
+	if ( mBody && sz > 0 ) {
+		mBody.resize( sz );
+	} else {
+		mBody = Buffer( sz );
+	}
+	char_traits<char>::copy( (char*)mBody.getData(), (char*)body.getData(), sz );
+}
+
+Buffer BodyInterface::toBuffer() const
+{
+	return mBody;
+}
+
+string BodyInterface::toString() const
+{
+	return bufferToString( mBody );
+}

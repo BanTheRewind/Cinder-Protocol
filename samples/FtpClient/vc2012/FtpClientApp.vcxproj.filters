@@ -24,7 +24,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\HttpServerApp.cpp">
+    <ClCompile Include="..\src\FtpClientApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\ClientInterface.cpp">

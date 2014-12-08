@@ -37,49 +37,21 @@
 
 #pragma once
 
-#include "cinder/Buffer.h"
-#include "cinder/Exception.h"
-#include <map>
-#include <string>
-#include <ostream>
+#include "TcpClientEventHandlerInterface.h"
 
-typedef std::pair<std::string, std::string>	KeyValuePair;
-
-class ProtocolInterface
+class TcpClientEventHandler : public TcpClientEventHandlerInterface
 {
 public:
-	//! Parses \a kvp into a key-value pair object.
-	static KeyValuePair		stringToKeyValuePair( const std::string& kvp, const std::string& delim = " " );
-	//! Returns string representation of key-value pair \a kvp.
-	static std::string		keyValuePairToString( const KeyValuePair& kvp, const std::string& delim = " " );
+	TcpClientEventHandler();
 
-	//! Return string \a value as Buffer.
-	static ci::Buffer		stringToBuffer( const std::string& value );
-	//! Returns string representation of \a buffer.
-	static std::string		bufferToString( const ci::Buffer& buffer );
+	void					onConnect( TcpSessionRef session );
+	void					onError( std::string err, size_t bytesTransferred );
+	void					onResolve();
 	
-	virtual ci::Buffer		toBuffer() const = 0;
-	virtual std::string		toString() const = 0;
-
-	//! Parses \a msg into relevant commands, field, body, etc.
-	void					parse( const std::string& msg );
-	virtual void			parse( const ci::Buffer& buffer ) = 0;
-
-	//! Exception representing invalid key-value pair
-	class ExcKeyValuePairInvalid : public ci::Exception
-	{
-	public:
-		ExcKeyValuePairInvalid( const std::string& kvp ) throw();
-		virtual const char* what() const throw()
-		{
-			return mMessage;
-		}
-	private:
-		char mMessage[ 2048 ];
-	};
+	const std::string&		getError() const;
+	const TcpSessionRef&	getSession() const;
 protected:
-	ProtocolInterface();
-	
-	static std::string		sCrLf;
+	std::string				mError;
+	TcpSessionRef			mSession;
 };
  

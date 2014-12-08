@@ -1,3 +1,40 @@
+/*
+* 
+* Copyright (c) 2014, Wieden+Kennedy, 
+* Stephen Schieberl
+* All rights reserved.
+* 
+* Redistribution and use in source and binary forms, with or 
+* without modification, are permitted provided that the following 
+* conditions are met:
+* 
+* Redistributions of source code must retain the above copyright 
+* notice, this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright 
+* notice, this list of conditions and the following disclaimer in 
+* the documentation and/or other materials provided with the 
+* distribution.
+* 
+* Neither the name of the Ban the Rewind nor the names of its 
+* contributors may be used to endorse or promote products 
+* derived from this software without specific prior written 
+* permission.
+* 
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
+* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
+* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+* COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
+* INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+* BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+* CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+* ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+* 
+*/
+
 #include "HttpInterface.h"
 
 #include "boost/algorithm/string.hpp"
@@ -8,7 +45,7 @@ using namespace ci;
 using namespace std;
 
 HttpInterface::HttpInterface( HttpVersion v )
-: ProtocolInterface(), mHttpVersion( v )
+: BodyInterface(), HeaderInterface(), mHttpVersion( v )
 {
 }
 
@@ -62,7 +99,60 @@ void HttpInterface::setHttpVersion( HttpVersion v )
 	mHttpVersion = v;
 }
 
+void HttpInterface::parse( const Buffer& buffer )
+{
+	string msg		= bufferToString( buffer );
+	size_t offset	= msg.find( sCrLf + sCrLf );
+	size_t sz		= buffer.getDataSize();
+	if ( offset < sz ) {
+		msg = msg.substr( 0, offset );
+		parseHeader( msg );
+
+		size_t len = sz - offset;
+		Buffer body( len );
+		char_traits<char>::copy( (char*)body.getData(), (char*)buffer.getData() + ( offset + 4 ), len );
+		mBody = body;
+	}
+}
+
+Buffer HttpInterface::toBuffer() const
+{
+	string header		= headerToString();
+	size_t headerLength	= header.size();
+	size_t bodyLength	= 0;
+	if ( mBody ) {
+		bodyLength		= mBody.getDataSize();
+	}
+	size_t sz			= headerLength + bodyLength;
+
+	Buffer buffer( sz );
+	char_traits<char>::copy( (char*)buffer.getData(), (char*)&header[ 0 ], headerLength );
+	if ( bodyLength > 0 ) {
+		char_traits<char>::copy( (char*)buffer.getData() + headerLength, (char*)mBody.getData(), bodyLength );
+	}
+
+	return buffer;
+}
+
+string HttpInterface::toString() const
+{
+	string body		= "";
+	string header	= headerToString();
+	if ( mBody ) {
+		body		= bufferToString( mBody );
+	}
+	return header + body;
+}
+
+
 HttpInterface::ExcHttpVersionInvalid::ExcHttpVersionInvalid( const string& ver ) throw()
 {
 	sprintf( mMessage, "\"%s\" is not a valid HTTP version", ver.c_str() );
 }
+
+ostream& operator<<( ostream& out, const HttpInterface& p )
+{
+	out << p.toString();
+	return out;
+}
+ 

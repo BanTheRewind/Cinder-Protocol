@@ -37,40 +37,50 @@
 
 #pragma once
 
-#include "BodyInterface.h"
-#include "HeaderInterface.h"
+#include "ProtocolInterface.h"
 
-enum : size_t
-{
-	HTTP_0_9, HTTP_1_0, HTTP_1_1, HTTP_2_0
-} typedef HttpVersion;
+typedef std::map<std::string, std::string> HeaderMap;
 
-class HttpInterface : public BodyInterface, public HeaderInterface
+class HeaderInterface : public ProtocolInterface
 {
 public:
-	//! Parses HTTP version from \a v.
-	static HttpVersion		stringToHttpVersion( const std::string& v );
-	//! Returns string representing HTTP version \a v.
-	static std::string		httpVersionToString( HttpVersion v );
-	
-	//! Returns HTTP version.
-	HttpVersion				getHttpVersion() const;
-	//! Sets HTTP version to \a v.
-	void					setHttpVersion( HttpVersion v );
+	//! Parses \a headerMap into a header map object.
+	static HeaderMap	stringToHeaderMap( const std::string& headerMap );
+	//! Return string representation of \a headerMap.
+	static std::string	headerMapToString( const HeaderMap& headerMap );
+	//! Returns copy of buffer with header removed.
+	static ci::Buffer	removeHeader( const ci::Buffer& buffer );
 
-	//! Parses \a buffer to header and body. Throws exception for invalid header.
-	void					parse( const ci::Buffer& buffer );
+	//! Erases header named \a field.
+	void				eraseHeader( const std::string& field );
+	//! Returns header value for \a field.
+	const std::string&	getHeader( const std::string& field );
+	//! Return header map.
+	HeaderMap&			getHeaders();
+	//! Return header map.
+	const HeaderMap&	getHeaders() const;
+	//! Returns true if a valid header exists.
+	bool				hasHeader() const;
+	//! Set header \a value for \a field. Overwrites existing value with same key.
+	void				setHeader( const std::string& field, const std::string& value );
+	//! Set header field from \a kvp. Overwrites existing value with same key.
+	void				setHeader( const KeyValuePair& kvp );
+	// Sets all header fields from \a headerMap. Overwrites existing values.
+	void				setHeaders( const HeaderMap& headerMap );
+	//! Parses \a buffer into headers.
+	virtual void		parse( const ci::Buffer& buffer );
+	virtual void		parseHeader( const std::string& header ) = 0;
 
 	//! Converts entire message to ci::Buffer.
-	ci::Buffer				toBuffer() const;
+	virtual ci::Buffer	toBuffer() const;
 	//! Converts entire message to std::string.
-	std::string				toString() const;
-
-	//! Exception representing invalid HTTP version.
-	class ExcHttpVersionInvalid : public ci::Exception
+	virtual std::string	toString() const;
+	
+	//! Exception representing missing header
+	class ExcHeaderNotFound : public ci::Exception
 	{
 	public:
-		ExcHttpVersionInvalid( const std::string &ver ) throw();
+		ExcHeaderNotFound( const std::string& field ) throw();
 		virtual const char* what() const throw()
 		{
 			return mMessage;
@@ -78,13 +88,13 @@ public:
 	private:
 		char mMessage[ 2048 ];
 	};
-protected:	
-	HttpInterface( HttpVersion v );
+protected:
+	HeaderInterface();
+	
+	virtual std::string	headerToString() const = 0;
 
-	HttpVersion				mHttpVersion;
-
-	friend std::ostream&	operator<<( std::ostream& out, const HttpInterface& h );
+	bool				mHasHeader;
+	HeaderMap			mHeaderMap;
 };
 
-std::ostream&				operator<<( std::ostream& out, const HttpInterface& h );
- 
+  

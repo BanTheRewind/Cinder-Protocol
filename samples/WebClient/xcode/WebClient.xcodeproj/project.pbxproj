@@ -28,10 +28,16 @@
 		AE84AC7219787C9400C32419 /* UdpServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE84AC6119787C9400C32419 /* UdpServer.cpp */; };
 		AE84AC7319787C9400C32419 /* UdpSession.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE84AC6419787C9400C32419 /* UdpSession.cpp */; };
 		AE84AC7419787C9400C32419 /* WaitTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE84AC6719787C9400C32419 /* WaitTimer.cpp */; };
-		AE95DD78178377F400566AE9 /* HttpInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE95DD70178377F400566AE9 /* HttpInterface.cpp */; };
-		AE95DD79178377F400566AE9 /* HttpRequest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE95DD72178377F400566AE9 /* HttpRequest.cpp */; };
-		AE95DD7A178377F400566AE9 /* HttpResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE95DD74178377F400566AE9 /* HttpResponse.cpp */; };
-		AE95DD7B178377F400566AE9 /* ProtocolInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE95DD76178377F400566AE9 /* ProtocolInterface.cpp */; };
+		AECD96151990295A00FB1337 /* BodyInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AECD96011990295A00FB1337 /* BodyInterface.cpp */; };
+		AECD96161990295A00FB1337 /* FtpInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AECD96031990295A00FB1337 /* FtpInterface.cpp */; };
+		AECD96171990295A00FB1337 /* FtpRequest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AECD96051990295A00FB1337 /* FtpRequest.cpp */; };
+		AECD96181990295A00FB1337 /* FtpResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AECD96071990295A00FB1337 /* FtpResponse.cpp */; };
+		AECD96191990295A00FB1337 /* HeaderInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AECD96091990295A00FB1337 /* HeaderInterface.cpp */; };
+		AECD961A1990295A00FB1337 /* HttpInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AECD960B1990295A00FB1337 /* HttpInterface.cpp */; };
+		AECD961B1990295A00FB1337 /* HttpRequest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AECD960D1990295A00FB1337 /* HttpRequest.cpp */; };
+		AECD961C1990295A00FB1337 /* HttpResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AECD960F1990295A00FB1337 /* HttpResponse.cpp */; };
+		AECD961D1990295A00FB1337 /* KeyValuePairInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AECD96111990295A00FB1337 /* KeyValuePairInterface.cpp */; };
+		AECD961E1990295A00FB1337 /* ProtocolInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AECD96131990295A00FB1337 /* ProtocolInterface.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -83,14 +89,26 @@
 		AE84AC6719787C9400C32419 /* WaitTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = WaitTimer.cpp; path = "../../../blocks/Cinder-Asio/src/WaitTimer.cpp"; sourceTree = "<group>"; };
 		AE84AC6819787C9400C32419 /* WaitTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WaitTimer.h; path = "../../../blocks/Cinder-Asio/src/WaitTimer.h"; sourceTree = "<group>"; };
 		AE84AC6919787C9400C32419 /* WaitTimerEventHandlerInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WaitTimerEventHandlerInterface.h; path = "../../../blocks/Cinder-Asio/src/WaitTimerEventHandlerInterface.h"; sourceTree = "<group>"; };
-		AE95DD70178377F400566AE9 /* HttpInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HttpInterface.cpp; path = "../../../../Cinder-Protocol/src/HttpInterface.cpp"; sourceTree = "<group>"; };
-		AE95DD71178377F400566AE9 /* HttpInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HttpInterface.h; path = "../../../../Cinder-Protocol/src/HttpInterface.h"; sourceTree = "<group>"; };
-		AE95DD72178377F400566AE9 /* HttpRequest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HttpRequest.cpp; path = "../../../../Cinder-Protocol/src/HttpRequest.cpp"; sourceTree = "<group>"; };
-		AE95DD73178377F400566AE9 /* HttpRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HttpRequest.h; path = "../../../../Cinder-Protocol/src/HttpRequest.h"; sourceTree = "<group>"; };
-		AE95DD74178377F400566AE9 /* HttpResponse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HttpResponse.cpp; path = "../../../../Cinder-Protocol/src/HttpResponse.cpp"; sourceTree = "<group>"; };
-		AE95DD75178377F400566AE9 /* HttpResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HttpResponse.h; path = "../../../../Cinder-Protocol/src/HttpResponse.h"; sourceTree = "<group>"; };
-		AE95DD76178377F400566AE9 /* ProtocolInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ProtocolInterface.cpp; path = "../../../../Cinder-Protocol/src/ProtocolInterface.cpp"; sourceTree = "<group>"; };
-		AE95DD77178377F400566AE9 /* ProtocolInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProtocolInterface.h; path = "../../../../Cinder-Protocol/src/ProtocolInterface.h"; sourceTree = "<group>"; };
+		AECD96011990295A00FB1337 /* BodyInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BodyInterface.cpp; path = ../../../src/BodyInterface.cpp; sourceTree = "<group>"; };
+		AECD96021990295A00FB1337 /* BodyInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BodyInterface.h; path = ../../../src/BodyInterface.h; sourceTree = "<group>"; };
+		AECD96031990295A00FB1337 /* FtpInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FtpInterface.cpp; path = ../../../src/FtpInterface.cpp; sourceTree = "<group>"; };
+		AECD96041990295A00FB1337 /* FtpInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FtpInterface.h; path = ../../../src/FtpInterface.h; sourceTree = "<group>"; };
+		AECD96051990295A00FB1337 /* FtpRequest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FtpRequest.cpp; path = ../../../src/FtpRequest.cpp; sourceTree = "<group>"; };
+		AECD96061990295A00FB1337 /* FtpRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FtpRequest.h; path = ../../../src/FtpRequest.h; sourceTree = "<group>"; };
+		AECD96071990295A00FB1337 /* FtpResponse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FtpResponse.cpp; path = ../../../src/FtpResponse.cpp; sourceTree = "<group>"; };
+		AECD96081990295A00FB1337 /* FtpResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FtpResponse.h; path = ../../../src/FtpResponse.h; sourceTree = "<group>"; };
+		AECD96091990295A00FB1337 /* HeaderInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HeaderInterface.cpp; path = ../../../src/HeaderInterface.cpp; sourceTree = "<group>"; };
+		AECD960A1990295A00FB1337 /* HeaderInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HeaderInterface.h; path = ../../../src/HeaderInterface.h; sourceTree = "<group>"; };
+		AECD960B1990295A00FB1337 /* HttpInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HttpInterface.cpp; path = ../../../src/HttpInterface.cpp; sourceTree = "<group>"; };
+		AECD960C1990295A00FB1337 /* HttpInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HttpInterface.h; path = ../../../src/HttpInterface.h; sourceTree = "<group>"; };
+		AECD960D1990295A00FB1337 /* HttpRequest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HttpRequest.cpp; path = ../../../src/HttpRequest.cpp; sourceTree = "<group>"; };
+		AECD960E1990295A00FB1337 /* HttpRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HttpRequest.h; path = ../../../src/HttpRequest.h; sourceTree = "<group>"; };
+		AECD960F1990295A00FB1337 /* HttpResponse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HttpResponse.cpp; path = ../../../src/HttpResponse.cpp; sourceTree = "<group>"; };
+		AECD96101990295A00FB1337 /* HttpResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HttpResponse.h; path = ../../../src/HttpResponse.h; sourceTree = "<group>"; };
+		AECD96111990295A00FB1337 /* KeyValuePairInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = KeyValuePairInterface.cpp; path = ../../../src/KeyValuePairInterface.cpp; sourceTree = "<group>"; };
+		AECD96121990295A00FB1337 /* KeyValuePairInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KeyValuePairInterface.h; path = ../../../src/KeyValuePairInterface.h; sourceTree = "<group>"; };
+		AECD96131990295A00FB1337 /* ProtocolInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ProtocolInterface.cpp; path = ../../../src/ProtocolInterface.cpp; sourceTree = "<group>"; };
+		AECD96141990295A00FB1337 /* ProtocolInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProtocolInterface.h; path = ../../../src/ProtocolInterface.h; sourceTree = "<group>"; };
 		B14A5DB1785B4DB99B78CED8 /* CinderApp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = CinderApp.icns; path = ../resources/CinderApp.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -205,14 +223,26 @@
 		AE95DD6F1783775900566AE9 /* Cinder-Protocol */ = {
 			isa = PBXGroup;
 			children = (
-				AE95DD70178377F400566AE9 /* HttpInterface.cpp */,
-				AE95DD71178377F400566AE9 /* HttpInterface.h */,
-				AE95DD72178377F400566AE9 /* HttpRequest.cpp */,
-				AE95DD73178377F400566AE9 /* HttpRequest.h */,
-				AE95DD74178377F400566AE9 /* HttpResponse.cpp */,
-				AE95DD75178377F400566AE9 /* HttpResponse.h */,
-				AE95DD76178377F400566AE9 /* ProtocolInterface.cpp */,
-				AE95DD77178377F400566AE9 /* ProtocolInterface.h */,
+				AECD96011990295A00FB1337 /* BodyInterface.cpp */,
+				AECD96021990295A00FB1337 /* BodyInterface.h */,
+				AECD96031990295A00FB1337 /* FtpInterface.cpp */,
+				AECD96041990295A00FB1337 /* FtpInterface.h */,
+				AECD96051990295A00FB1337 /* FtpRequest.cpp */,
+				AECD96061990295A00FB1337 /* FtpRequest.h */,
+				AECD96071990295A00FB1337 /* FtpResponse.cpp */,
+				AECD96081990295A00FB1337 /* FtpResponse.h */,
+				AECD96091990295A00FB1337 /* HeaderInterface.cpp */,
+				AECD960A1990295A00FB1337 /* HeaderInterface.h */,
+				AECD960B1990295A00FB1337 /* HttpInterface.cpp */,
+				AECD960C1990295A00FB1337 /* HttpInterface.h */,
+				AECD960D1990295A00FB1337 /* HttpRequest.cpp */,
+				AECD960E1990295A00FB1337 /* HttpRequest.h */,
+				AECD960F1990295A00FB1337 /* HttpResponse.cpp */,
+				AECD96101990295A00FB1337 /* HttpResponse.h */,
+				AECD96111990295A00FB1337 /* KeyValuePairInterface.cpp */,
+				AECD96121990295A00FB1337 /* KeyValuePairInterface.h */,
+				AECD96131990295A00FB1337 /* ProtocolInterface.cpp */,
+				AECD96141990295A00FB1337 /* ProtocolInterface.h */,
 			);
 			name = "Cinder-Protocol";
 			sourceTree = "<group>";
@@ -320,20 +350,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AECD961C1990295A00FB1337 /* HttpResponse.cpp in Sources */,
 				AE84AC7119787C9400C32419 /* UdpClient.cpp in Sources */,
 				AE84AC6A19787C9400C32419 /* ClientInterface.cpp in Sources */,
+				AECD961E1990295A00FB1337 /* ProtocolInterface.cpp in Sources */,
 				AE84AC6D19787C9400C32419 /* SessionInterface.cpp in Sources */,
+				AECD96191990295A00FB1337 /* HeaderInterface.cpp in Sources */,
+				AECD96171990295A00FB1337 /* FtpRequest.cpp in Sources */,
 				AE84AC7019787C9400C32419 /* TcpSession.cpp in Sources */,
+				AECD96161990295A00FB1337 /* FtpInterface.cpp in Sources */,
+				AECD961B1990295A00FB1337 /* HttpRequest.cpp in Sources */,
+				AECD96151990295A00FB1337 /* BodyInterface.cpp in Sources */,
 				AE84AC7419787C9400C32419 /* WaitTimer.cpp in Sources */,
-				AE95DD78178377F400566AE9 /* HttpInterface.cpp in Sources */,
 				AE84AC7219787C9400C32419 /* UdpServer.cpp in Sources */,
-				AE95DD79178377F400566AE9 /* HttpRequest.cpp in Sources */,
+				AECD96181990295A00FB1337 /* FtpResponse.cpp in Sources */,
 				AE84AC7319787C9400C32419 /* UdpSession.cpp in Sources */,
+				AECD961D1990295A00FB1337 /* KeyValuePairInterface.cpp in Sources */,
 				AE84AC6C19787C9400C32419 /* ServerInterface.cpp in Sources */,
-				AE95DD7A178377F400566AE9 /* HttpResponse.cpp in Sources */,
-				AE95DD7B178377F400566AE9 /* ProtocolInterface.cpp in Sources */,
 				AE84AC6F19787C9400C32419 /* TcpServer.cpp in Sources */,
 				AE84AC6E19787C9400C32419 /* TcpClient.cpp in Sources */,
+				AECD961A1990295A00FB1337 /* HttpInterface.cpp in Sources */,
 				AE84AC6B19787C9400C32419 /* DispatcherInterface.cpp in Sources */,
 				AE479751197D8841005FCBCB /* WebClientApp.cpp in Sources */,
 			);

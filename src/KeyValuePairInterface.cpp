@@ -35,51 +35,60 @@
 * 
 */
 
-#pragma once
+#include "KeyValuePairInterface.h"
 
-#include "cinder/Buffer.h"
-#include "cinder/Exception.h"
-#include <map>
-#include <string>
-#include <ostream>
+#include "boost/algorithm/string.hpp"
+#include "cinder/Utilities.h"
+#include <vector>
 
-typedef std::pair<std::string, std::string>	KeyValuePair;
+using namespace ci;
+using namespace std;
 
-class ProtocolInterface
+KeyValuePairInterface::KeyValuePairInterface( const string& key, const string& value )
+: ProtocolInterface(), mKeyValuePair( make_pair( key, value ) )
 {
-public:
-	//! Parses \a kvp into a key-value pair object.
-	static KeyValuePair		stringToKeyValuePair( const std::string& kvp, const std::string& delim = " " );
-	//! Returns string representation of key-value pair \a kvp.
-	static std::string		keyValuePairToString( const KeyValuePair& kvp, const std::string& delim = " " );
+}
 
-	//! Return string \a value as Buffer.
-	static ci::Buffer		stringToBuffer( const std::string& value );
-	//! Returns string representation of \a buffer.
-	static std::string		bufferToString( const ci::Buffer& buffer );
-	
-	virtual ci::Buffer		toBuffer() const = 0;
-	virtual std::string		toString() const = 0;
+const string& KeyValuePairInterface::getValue() const
+{
+	return mKeyValuePair.second;
+}
 
-	//! Parses \a msg into relevant commands, field, body, etc.
-	void					parse( const std::string& msg );
-	virtual void			parse( const ci::Buffer& buffer ) = 0;
+void KeyValuePairInterface::setValue( const string& v )
+{
+	mKeyValuePair.second = v;
+}
 
-	//! Exception representing invalid key-value pair
-	class ExcKeyValuePairInvalid : public ci::Exception
-	{
-	public:
-		ExcKeyValuePairInvalid( const std::string& kvp ) throw();
-		virtual const char* what() const throw()
-		{
-			return mMessage;
+void KeyValuePairInterface::parse( const Buffer& buffer )
+{
+	string s = bufferToString( buffer );
+	vector<string> lines;
+	boost::split( lines, s, boost::is_any_of( sCrLf ) );
+	if ( !lines.empty() ) {
+		vector<string> pair;
+		boost::split( pair, lines.at( 0 ), boost::is_any_of( " " ) );
+		if ( pair.size() > 1 ) {
+			string key		= pair.at( 0 );
+			pair.erase( pair.begin() );
+			string value	= boost::join( pair, " " );
+			mKeyValuePair	= make_pair( key, value );
 		}
-	private:
-		char mMessage[ 2048 ];
-	};
-protected:
-	ProtocolInterface();
-	
-	static std::string		sCrLf;
-};
+	}
+}
+
+Buffer KeyValuePairInterface::toBuffer() const
+{
+	return stringToBuffer( toString() );
+}
+
+string KeyValuePairInterface::toString() const
+{
+	return keyValuePairToString( mKeyValuePair );
+}
+
+ostream& operator<<( ostream& out, const KeyValuePairInterface& p )
+{
+	out << p.toString();
+	return out;
+}
  
