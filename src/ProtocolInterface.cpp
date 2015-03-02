@@ -74,7 +74,9 @@ string ProtocolInterface::keyValuePairToString( const KeyValuePair& kvp, const s
 
 Buffer ProtocolInterface::stringToBuffer( const string& value )
 {
-	return Buffer( (char*)&value[ 0 ], value.size() );
+	Buffer buffer( value.size() );
+	buffer.copyFrom( (char*)&value[ 0 ], value.size() );
+	return buffer;
 }
 
 string ProtocolInterface::bufferToString( const Buffer& buffer )
