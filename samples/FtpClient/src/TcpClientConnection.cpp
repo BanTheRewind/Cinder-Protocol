@@ -1,6 +1,6 @@
 /*
 * 
-* Copyright (c) 2014, Wieden+Kennedy, 
+* Copyright (c) 2015, Wieden+Kennedy, 
 * Stephen Schieberl
 * All rights reserved.
 * 
@@ -43,12 +43,12 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-TcpClientConnectionRef TcpClientConnection::create( boost::asio::io_service& io )
+TcpClientConnectionRef TcpClientConnection::create( asio::io_service& io )
 {
 	return TcpClientConnectionRef( new TcpClientConnection( io ) );
 }
 
-TcpClientConnection::TcpClientConnection( boost::asio::io_service& io )
+TcpClientConnection::TcpClientConnection( asio::io_service& io )
 : mConnected( false )
 {
 	mClient = TcpClient::create( io );
@@ -105,7 +105,6 @@ void TcpClientConnection::update()
 			mClientEventHandler.getSession()->connectReadCompleteEventHandler( &TcpSessionEventHandler::onReadComplete, &mSessionEventHandler );
 			mClientEventHandler.getSession()->connectReadEventHandler( &TcpSessionEventHandler::onRead, &mSessionEventHandler );
 			mClientEventHandler.getSession()->connectWriteEventHandler( &TcpSessionEventHandler::onWrite, &mSessionEventHandler );
-
 			mClientEventHandler.getSession()->read();
 		}
 	}

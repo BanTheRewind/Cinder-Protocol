@@ -216,5 +216,8 @@
     <ClInclude Include="..\include\TcpClientConnection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\CinderAsio.h">
+      <Filter>Blocks\Cinder-Asio</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

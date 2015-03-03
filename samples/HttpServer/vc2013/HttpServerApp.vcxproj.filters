@@ -180,5 +180,8 @@
     <ClInclude Include="..\..\..\src\ProtocolInterface.h">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\CinderAsio.h">
+      <Filter>Blocks\Cinder-Asio</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

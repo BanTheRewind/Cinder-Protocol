@@ -233,6 +233,7 @@
     <ResourceCompile Include="Resources.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\CinderAsio.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\ClientEventHandlerInterface.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\ClientInterface.h" />
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\DispatcherEventHandlerInterface.h" />
