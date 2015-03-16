@@ -41,14 +41,14 @@
 #include "HttpResponse.h"
 #include "TcpClient.h"
 
-#include "cinder/app/AppBasic.h"
+#include "cinder/app/App.h"
 #include "cinder/gl/Texture.h"
 #include "cinder/params/Params.h"
 #include "cinder/Text.h"
 
 #include "boost/algorithm/string.hpp"
 
-class HttpClientApp : public ci::app::AppBasic 
+class HttpClientApp : public ci::app::App
 {
 public:
 	void						draw();
@@ -240,7 +240,7 @@ void HttpClientApp::setup()
 
 	mParams = params::InterfaceGl::create( "Params", ivec2( 200, 150 ) );
 	mParams->addParam( "Frame rate",	&mFrameRate,			"", true );
-	mParams->addParam( "Full screen",	&mFullScreen,			"key=f" );
+	mParams->addParam( "Full screen",	&mFullScreen.key( "f" ) );
 	mParams->addParam( "Image index",	&mIndex,				"min=0 max=3 step=1 keyDecr=i keyIncr=I" );
 	mParams->addParam( "Host",			&mHost );
 	mParams->addButton( "Write",		[ & ]() { write(); },	"key=w" );
@@ -302,4 +302,4 @@ void HttpClientApp::write()
 	mClient->connect( mHost, 2000 );
 }
 
-CINDER_APP_BASIC( HttpClientApp, RendererGl )
+CINDER_APP( HttpClientApp, RendererGl )

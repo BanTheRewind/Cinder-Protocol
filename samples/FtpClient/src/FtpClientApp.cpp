@@ -37,7 +37,7 @@
 
 #include "CinderAsio.h"
 
-#include "cinder/app/AppBasic.h"
+#include "cinder/app/App.h"
 #include "cinder/gl/Texture.h"
 #include "cinder/params/Params.h"
 #include "cinder/Text.h"
@@ -49,7 +49,7 @@
 
 #include "TcpClientConnection.h"
 
-class FtpClientApp : public ci::app::AppBasic 
+class FtpClientApp : public ci::app::App
 {
 public:
 	void						draw();
@@ -102,7 +102,7 @@ void FtpClientApp::setup()
 	
 	mParams = params::InterfaceGl::create( "Params", ivec2( 200, 120 ) );
 	mParams->addParam( "Frame rate",	&mFrameRate,			"", true );
-	mParams->addParam( "Full screen",	&mFullScreen,			"key=f" );
+	mParams->addParam( "Full screen",	&mFullScreen ).key( "f" );
 	mParams->addButton( "Quit",			[ & ]() { quit(); },	"key=q" );
 	
 	mConnectionControl = TcpClientConnection::create( io_service() );
@@ -170,4 +170,4 @@ void FtpClientApp::update()
 	}
 }
 
-CINDER_APP_BASIC( FtpClientApp, RendererGl )
+CINDER_APP( FtpClientApp, RendererGl )

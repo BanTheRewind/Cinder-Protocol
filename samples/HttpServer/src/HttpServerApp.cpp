@@ -41,14 +41,14 @@
 #include "HttpResponse.h"
 #include "TcpServer.h"
 
-#include "cinder/app/AppBasic.h"
+#include "cinder/app/App.h"
 #include "cinder/gl/Texture.h"
 #include "cinder/params/Params.h"
 #include "cinder/Text.h"
 
 #include "boost/algorithm/string.hpp"
 
-class HttpServerApp : public ci::app::AppBasic 
+class HttpServerApp : public ci::app::App
 {
 public:
 	void						draw();
@@ -243,7 +243,7 @@ void HttpServerApp::setup()
 	
 	mParams = params::InterfaceGl::create( "Params", ivec2( 200, 150 ) );
 	mParams->addParam( "Frame rate",	&mFrameRate,					"", true );
-	mParams->addParam( "Full screen",	&mFullScreen,					"key=f" );
+	mParams->addParam( "Full screen",	&mFullScreen.key( "f" ) );
 	mParams->addButton( "Quit", bind(	&HttpServerApp::quit, this ),	"key=q" );
 	
 	mServer = TcpServer::create( io_service() );
@@ -283,4 +283,4 @@ void HttpServerApp::update()
 	}
 }
 
-CINDER_APP_BASIC( HttpServerApp, RendererGl )
+CINDER_APP( HttpServerApp, RendererGl )

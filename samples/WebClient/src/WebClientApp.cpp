@@ -37,7 +37,7 @@
 
 #include "CinderAsio.h"
 
-#include "cinder/app/AppBasic.h"
+#include "cinder/app/App.h"
 #include "cinder/gl/Texture.h"
 #include "cinder/params/Params.h"
 #include "cinder/Text.h"
@@ -48,12 +48,12 @@
 #include "HttpResponse.h"
 #include "TcpClient.h"
 
-class WebClientApp : public ci::app::AppBasic 
+class WebClientApp : public ci::app::App
 {
 public:
-	void						draw();
-	void						setup();
-	void						update();
+	void						draw() override;
+	void						setup() override;
+	void						update() override;
 private:
 	TcpClientRef				mClient;
 	TcpSessionRef				mSession;
@@ -206,7 +206,7 @@ void WebClientApp::setup()
 
 	mParams = params::InterfaceGl::create( "Params", ivec2( 200, 150 ) );
 	mParams->addParam( "Frame rate",	&mFrameRate,					"", true );
-	mParams->addParam( "Full screen",	&mFullScreen,					"key=f" );
+	mParams->addParam( "Full screen",	&mFullScreen.key( "f" ) );
 	mParams->addParam( "Host",			&mHost );
 	mParams->addParam( "Port",			&mPort,							"min=0 max=65535 step=1 keyDecr=p keyIncr=P" );
 	mParams->addButton( "Write", bind(	&WebClientApp::write, this ),	"key=w" );
@@ -254,5 +254,5 @@ void WebClientApp::write()
 	mClient->connect( mHost, (uint16_t)mPort );		
 }
 
-CINDER_APP_BASIC( WebClientApp, RendererGl )
+CINDER_APP( WebClientApp, RendererGl )
  
