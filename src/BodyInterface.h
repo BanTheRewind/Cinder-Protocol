@@ -1,6 +1,6 @@
 /*
 * 
-* Copyright (c) 2015, Wieden+Kennedy, 
+* Copyright (c) 2016, Wieden+Kennedy, 
 * Stephen Schieberl
 * All rights reserved.
 * 
@@ -43,19 +43,19 @@ class BodyInterface : public ProtocolInterface
 {
 public:
 	//! Appends \a buffer to body.
-	void				append( const ci::Buffer& buffer );
+	void					append( const ci::BufferRef& buffer );
 	//! Returns message body.
-	const ci::Buffer&	getBody() const;
+	const ci::BufferRef&	getBody() const;
 	//! Sets or replaces message body with \a body.
-	void				setBody( const ci::Buffer& body );
+	void					setBody( const ci::BufferRef& body );
 
 	//! Converts entire message to ci::Buffer.
-	virtual ci::Buffer	toBuffer() const;
+	virtual ci::BufferRef	toBuffer() const;
 	//! Converts entire message to std::string.
-	virtual std::string	toString() const;
+	virtual std::string		toString() const;
 protected:
 	BodyInterface();
 	
-	ci::Buffer			mBody;
+	ci::BufferRef			mBody;
 };
  

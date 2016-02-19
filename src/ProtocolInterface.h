@@ -1,6 +1,6 @@
 /*
 * 
-* Copyright (c) 2015, Wieden+Kennedy, 
+* Copyright (c) 2016, Wieden+Kennedy, 
 * Stephen Schieberl
 * All rights reserved.
 * 
@@ -54,16 +54,16 @@ public:
 	static std::string		keyValuePairToString( const KeyValuePair& kvp, const std::string& delim = " " );
 
 	//! Return string \a value as Buffer.
-	static ci::Buffer		stringToBuffer( const std::string& value );
+	static ci::BufferRef	stringToBuffer( const std::string& value );
 	//! Returns string representation of \a buffer.
-	static std::string		bufferToString( const ci::Buffer& buffer );
+	static std::string		bufferToString( const ci::BufferRef& buffer );
 	
-	virtual ci::Buffer		toBuffer() const = 0;
+	virtual ci::BufferRef	toBuffer() const = 0;
 	virtual std::string		toString() const = 0;
 
 	//! Parses \a msg into relevant commands, field, body, etc.
 	void					parse( const std::string& msg );
-	virtual void			parse( const ci::Buffer& buffer ) = 0;
+	virtual void			parse( const ci::BufferRef& buffer ) = 0;
 
 	//! Exception representing invalid key-value pair
 	class ExcKeyValuePairInvalid : public ci::Exception

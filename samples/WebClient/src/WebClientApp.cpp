@@ -1,6 +1,6 @@
 /*
 * 
-* Copyright (c) 2015, Wieden+Kennedy, 
+* Copyright (c) 2016, Wieden+Kennedy, 
 * Stephen Schieberl
 * All rights reserved.
 * 
@@ -38,7 +38,7 @@
 #include "CinderAsio.h"
 
 #include "cinder/app/App.h"
-#include "cinder/gl/Texture.h"
+#include "cinder/gl/gl.h"
 #include "cinder/params/Params.h"
 #include "cinder/Text.h"
 
@@ -68,7 +68,7 @@ private:
 	void						onClose();
 	void						onConnect( TcpSessionRef session );
 	void						onError( std::string err, size_t bytesTransferred );
-	void						onRead( ci::Buffer buffer );
+	void						onRead( ci::BufferRef buffer );
 	void						onReadComplete();
 	void						onResolve();
 	void						onWrite( size_t bytesTransferred );
@@ -130,9 +130,9 @@ void WebClientApp::onError( string err, size_t bytesTransferred )
 	mText.push_back( text );
 }
 
-void WebClientApp::onRead( ci::Buffer buffer )
+void WebClientApp::onRead( ci::BufferRef buffer )
 {
-	mText.push_back(toString( buffer.getDataSize() ) + " bytes read" );
+	mText.push_back(toString( buffer->getSize() ) + " bytes read" );
 	
 	if ( !mHttpResponse.hasHeader() ) {
 		mHttpResponse.parseHeader( HttpResponse::bufferToString( buffer ) );
@@ -206,7 +206,7 @@ void WebClientApp::setup()
 
 	mParams = params::InterfaceGl::create( "Params", ivec2( 200, 150 ) );
 	mParams->addParam( "Frame rate",	&mFrameRate,					"", true );
-	mParams->addParam( "Full screen",	&mFullScreen.key( "f" ) );
+	mParams->addParam( "Full screen",	&mFullScreen ).key( "f" );
 	mParams->addParam( "Host",			&mHost );
 	mParams->addParam( "Port",			&mPort,							"min=0 max=65535 step=1 keyDecr=p keyIncr=P" );
 	mParams->addButton( "Write", bind(	&WebClientApp::write, this ),	"key=w" );

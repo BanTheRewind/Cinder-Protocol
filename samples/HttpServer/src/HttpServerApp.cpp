@@ -1,6 +1,6 @@
 /*
 * 
-* Copyright (c) 2015, Wieden+Kennedy, 
+* Copyright (c) 2016, Wieden+Kennedy, 
 * Stephen Schieberl
 * All rights reserved.
 * 
@@ -42,7 +42,7 @@
 #include "TcpServer.h"
 
 #include "cinder/app/App.h"
-#include "cinder/gl/Texture.h"
+#include "cinder/gl/gl.h"
 #include "cinder/params/Params.h"
 #include "cinder/Text.h"
 
@@ -66,7 +66,7 @@ private:
 	void						onCancel();
 	void						onClose();
 	void						onError( std::string err, size_t bytesTransferred );
-	void						onRead( ci::Buffer buffer );
+	void						onRead( ci::BufferRef buffer );
 	void						onWrite( size_t bytesTransferred );
 	
 	ci::Font					mFont;
@@ -146,9 +146,9 @@ void HttpServerApp::onError( string err, size_t bytesTransferred )
 	mText.push_back( text );
 }
 
-void HttpServerApp::onRead( ci::Buffer buffer )
+void HttpServerApp::onRead( ci::BufferRef buffer )
 {
-	mText.push_back( toString( buffer.getDataSize() ) + " bytes read" );
+	mText.push_back( toString( buffer->getSize() ) + " bytes read" );
 	
 	// Parse the request buffer into headers and body
 	mHttpRequest.parse( buffer );
@@ -170,7 +170,7 @@ void HttpServerApp::onRead( ci::Buffer buffer )
 	mHttpResponse.setHttpVersion( HttpVersion::HTTP_1_1 );
 	
 	// Declare an empty response body
-	Buffer body;
+	BufferRef body;
 
 	if ( index < 0 || index > 2 ) {
 		
@@ -215,7 +215,7 @@ void HttpServerApp::onRead( ci::Buffer buffer )
 	
 	// Set the content length using the body size
 	mHttpResponse.setBody( body );
-	size_t sz = body.getDataSize();
+	size_t sz = body->getSize();
 	mHttpResponse.setHeader( "Content-Length", toString( sz ) );
 	
 	// Tell the client to close the connection when they're finished
@@ -243,7 +243,7 @@ void HttpServerApp::setup()
 	
 	mParams = params::InterfaceGl::create( "Params", ivec2( 200, 150 ) );
 	mParams->addParam( "Frame rate",	&mFrameRate,					"", true );
-	mParams->addParam( "Full screen",	&mFullScreen.key( "f" ) );
+	mParams->addParam( "Full screen",	&mFullScreen ).key( "f" );
 	mParams->addButton( "Quit", bind(	&HttpServerApp::quit, this ),	"key=q" );
 	
 	mServer = TcpServer::create( io_service() );

@@ -1,6 +1,6 @@
 /*
 * 
-* Copyright (c) 2015, Wieden+Kennedy, 
+* Copyright (c) 2016, Wieden+Kennedy, 
 * Stephen Schieberl
 * All rights reserved.
 * 
@@ -72,18 +72,18 @@ string HeaderInterface::headerMapToString( const HeaderMap& h )
 	return headerMap;
 }
 
-Buffer HeaderInterface::removeHeader( const Buffer& buffer )
+BufferRef HeaderInterface::removeHeader( const BufferRef& buffer )
 {
 	string msg		= bufferToString( buffer );
 	size_t offset	= msg.find( sCrLf + sCrLf );
-	size_t sz		= buffer.getDataSize();
+	size_t sz		= buffer->getSize();
 	if ( offset < sz ) {
 		size_t len = ( sz - offset ) - 4;
-		Buffer body( len );
-		char_traits<char>::copy( (char*)body.getData(), (char*)buffer.getData() + ( offset + 4 ), len );
+		BufferRef body = Buffer::create( len );
+		char_traits<char>::copy( (char*)body->getData(), (char*)buffer->getData() + ( offset + 4 ), len );
 		return body;
 	} else {
-		return Buffer();
+		return Buffer::create( 0 );
 	}
 }
 
@@ -135,19 +135,19 @@ void HeaderInterface::setHeaders( const HeaderMap& headerMap )
 	mHeaderMap = headerMap;
 }
 
-void HeaderInterface::parse( const Buffer& buffer )
+void HeaderInterface::parse( const BufferRef& buffer )
 {
-	string msg		= bufferToString( buffer );
+	string msg = bufferToString( buffer );
 	parseHeader( msg );
 }
 
-Buffer HeaderInterface::toBuffer() const
+BufferRef HeaderInterface::toBuffer() const
 {
 	string header	= headerToString();
 	size_t sz		= header.size();
 	
-	Buffer buffer( sz );
-	char_traits<char>::copy( (char*)buffer.getData(), (char*)&header[ 0 ], sz );
+	BufferRef buffer = Buffer::create( sz );
+	char_traits<char>::copy( (char*)buffer->getData(), (char*)&header[ 0 ], sz );
 	
 	return buffer;
 }

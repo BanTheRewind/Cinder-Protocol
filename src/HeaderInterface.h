@@ -1,6 +1,6 @@
 /*
 * 
-* Copyright (c) 2015, Wieden+Kennedy, 
+* Copyright (c) 2016, Wieden+Kennedy, 
 * Stephen Schieberl
 * All rights reserved.
 * 
@@ -45,36 +45,36 @@ class HeaderInterface : public ProtocolInterface
 {
 public:
 	//! Parses \a headerMap into a header map object.
-	static HeaderMap	stringToHeaderMap( const std::string& headerMap );
+	static HeaderMap		stringToHeaderMap( const std::string& headerMap );
 	//! Return string representation of \a headerMap.
-	static std::string	headerMapToString( const HeaderMap& headerMap );
+	static std::string		headerMapToString( const HeaderMap& headerMap );
 	//! Returns copy of buffer with header removed.
-	static ci::Buffer	removeHeader( const ci::Buffer& buffer );
+	static ci::BufferRef	removeHeader( const ci::BufferRef& buffer );
 
 	//! Erases header named \a field.
-	void				eraseHeader( const std::string& field );
+	void					eraseHeader( const std::string& field );
 	//! Returns header value for \a field.
-	const std::string&	getHeader( const std::string& field );
+	const std::string&		getHeader( const std::string& field );
 	//! Return header map.
-	HeaderMap&			getHeaders();
+	HeaderMap&				getHeaders();
 	//! Return header map.
-	const HeaderMap&	getHeaders() const;
+	const HeaderMap&		getHeaders() const;
 	//! Returns true if a valid header exists.
-	bool				hasHeader() const;
+	bool					hasHeader() const;
 	//! Set header \a value for \a field. Overwrites existing value with same key.
-	void				setHeader( const std::string& field, const std::string& value );
+	void					setHeader( const std::string& field, const std::string& value );
 	//! Set header field from \a kvp. Overwrites existing value with same key.
-	void				setHeader( const KeyValuePair& kvp );
+	void					setHeader( const KeyValuePair& kvp );
 	// Sets all header fields from \a headerMap. Overwrites existing values.
-	void				setHeaders( const HeaderMap& headerMap );
+	void					setHeaders( const HeaderMap& headerMap );
 	//! Parses \a buffer into headers.
-	virtual void		parse( const ci::Buffer& buffer );
-	virtual void		parseHeader( const std::string& header ) = 0;
+	virtual void			parse( const ci::BufferRef& buffer );
+	virtual void			parseHeader( const std::string& header ) = 0;
 
 	//! Converts entire message to ci::Buffer.
-	virtual ci::Buffer	toBuffer() const;
+	virtual ci::BufferRef	toBuffer() const;
 	//! Converts entire message to std::string.
-	virtual std::string	toString() const;
+	virtual std::string		toString() const;
 	
 	//! Exception representing missing header
 	class ExcHeaderNotFound : public ci::Exception
@@ -91,10 +91,10 @@ public:
 protected:
 	HeaderInterface();
 	
-	virtual std::string	headerToString() const = 0;
+	virtual std::string		headerToString() const = 0;
 
-	bool				mHasHeader;
-	HeaderMap			mHeaderMap;
+	bool					mHasHeader;
+	HeaderMap				mHeaderMap;
 };
 
   

@@ -1,6 +1,6 @@
 /*
 * 
-* Copyright (c) 2015, Wieden+Kennedy, 
+* Copyright (c) 2016, Wieden+Kennedy, 
 * Stephen Schieberl
 * All rights reserved.
 * 
@@ -42,7 +42,7 @@
 #include "TcpClient.h"
 
 #include "cinder/app/App.h"
-#include "cinder/gl/Texture.h"
+#include "cinder/gl/gl.h"
 #include "cinder/params/Params.h"
 #include "cinder/Text.h"
 
@@ -71,7 +71,7 @@ private:
 	void						onClose();
 	void						onConnect( TcpSessionRef session );
 	void						onError( std::string err, size_t bytesTransferred );
-	void						onRead( ci::Buffer buffer );
+	void						onRead( ci::BufferRef buffer );
 	void						onResolve();
 	void						onWrite( size_t bytesTransferred );
 	
@@ -135,9 +135,9 @@ void HttpClientApp::onError( string err, size_t bytesTransferred )
 	mText.push_back( text );
 }
 
-void HttpClientApp::onRead( ci::Buffer buffer )
+void HttpClientApp::onRead( ci::BufferRef buffer )
 {
-	size_t sz	= buffer.getDataSize();
+	size_t sz	= buffer->getSize();
 	mBytesRead	+= sz;
 	mText.push_back( toString( sz ) + " bytes read" );
 	
@@ -240,7 +240,7 @@ void HttpClientApp::setup()
 
 	mParams = params::InterfaceGl::create( "Params", ivec2( 200, 150 ) );
 	mParams->addParam( "Frame rate",	&mFrameRate,			"", true );
-	mParams->addParam( "Full screen",	&mFullScreen.key( "f" ) );
+	mParams->addParam( "Full screen",	&mFullScreen ).key( "f" );
 	mParams->addParam( "Image index",	&mIndex,				"min=0 max=3 step=1 keyDecr=i keyIncr=I" );
 	mParams->addParam( "Host",			&mHost );
 	mParams->addButton( "Write",		[ & ]() { write(); },	"key=w" );
@@ -293,8 +293,7 @@ void HttpClientApp::write()
 	// Update request body
 	string index	= toString( mIndex );
 	mFilename		= index;
-	Buffer body		= HttpRequest::stringToBuffer( index );
-	mHttpRequest.setBody( body );
+	mHttpRequest.setBody( HttpRequest::stringToBuffer( index ) );
 	
 	mText.push_back( "Connecting to:\n" + mHost + ":2000" );
 	

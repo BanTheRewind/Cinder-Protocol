@@ -24,7 +24,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\HttpServerApp.cpp">
+    <ClCompile Include="..\src\WebClientApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\blocks\Cinder-Asio\src\ClientInterface.cpp">
@@ -63,9 +63,6 @@
     <ClCompile Include="..\..\..\src\BodyInterface.cpp">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\FtpInterface.cpp">
-      <Filter>Blocks\Cinder-Protocol</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\FtpRequest.cpp">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClCompile>
@@ -88,6 +85,9 @@
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\ProtocolInterface.cpp">
+      <Filter>Blocks\Cinder-Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\FtpInterface.cpp">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClCompile>
   </ItemGroup>
@@ -168,13 +168,7 @@
     <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\WaitTimerEventHandlerInterface.h">
       <Filter>Blocks\Cinder-Asio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\CinderAsio.h">
-      <Filter>Blocks\Cinder-Asio</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\BodyInterface.h">
-      <Filter>Blocks\Cinder-Protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\FtpInterface.h">
       <Filter>Blocks\Cinder-Protocol</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\FtpRequest.h">
@@ -200,6 +194,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\ProtocolInterface.h">
       <Filter>Blocks\Cinder-Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\FtpInterface.h">
+      <Filter>Blocks\Cinder-Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-Asio\src\CinderAsio.h">
+      <Filter>Blocks\Cinder-Asio</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

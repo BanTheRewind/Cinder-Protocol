@@ -1,6 +1,6 @@
 /*
 * 
-* Copyright (c) 2015, Wieden+Kennedy, 
+* Copyright (c) 2016, Wieden+Kennedy, 
 * Stephen Schieberl
 * All rights reserved.
 * 
@@ -49,36 +49,36 @@ BodyInterface::BodyInterface()
 {
 }
 
-void BodyInterface::append( const ci::Buffer& buffer )
+void BodyInterface::append( const ci::BufferRef& buffer )
 {
 	size_t sz	= 0;
-	size_t len	= buffer.getDataSize();
+	size_t len	= buffer->getSize();
 	if ( mBody ) {
-		sz = mBody.getDataSize();
-		mBody.resize( sz + len );
+		sz = mBody->getSize();
+		mBody->resize( sz + len );
 	} else {
-		mBody = Buffer( len );
+		mBody = Buffer::create( len );
 	}
-	char_traits<char>::copy( (char*)mBody.getData() + sz, (char*)buffer.getData(), len );
+	char_traits<char>::copy( (char*)mBody->getData() + sz, (char*)buffer->getData(), len );
 }
 
-const Buffer& BodyInterface::getBody() const
+const BufferRef& BodyInterface::getBody() const
 {
 	return mBody;
 }
 
-void BodyInterface::setBody( const Buffer& body )
+void BodyInterface::setBody( const BufferRef& body )
 {
-	size_t sz = body.getDataSize();
+	size_t sz = body->getSize();
 	if ( mBody && sz > 0 ) {
-		mBody.resize( sz );
+		mBody->resize( sz );
 	} else {
-		mBody = Buffer( sz );
+		mBody = Buffer::create( sz );
 	}
-	char_traits<char>::copy( (char*)mBody.getData(), (char*)body.getData(), sz );
+	char_traits<char>::copy( (char*)mBody->getData(), (char*)body->getData(), sz );
 }
 
-Buffer BodyInterface::toBuffer() const
+BufferRef BodyInterface::toBuffer() const
 {
 	return mBody;
 }
