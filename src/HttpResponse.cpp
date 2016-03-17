@@ -53,19 +53,48 @@ HttpResponse::HttpResponse( HttpVersion httpVersion, size_t statusCode, const st
 {
 }
 
+HttpResponse::HttpResponse( const HttpResponse& rhs )
+: HttpInterface( rhs.mHttpVersion )
+{
+	*this = rhs;
+}
+
+HttpResponse& HttpResponse::operator=( const HttpResponse& rhs )
+{
+	mBody			= rhs.mBody;
+	mHasHeader		= rhs.mHasHeader;
+	mHeaderMap		= rhs.mHeaderMap;
+	mHttpVersion	= rhs.mHttpVersion;
+	mReason			= rhs.mReason;
+	mStatusCode		= rhs.mStatusCode;
+	return *this;
+}
+
+HttpResponse& HttpResponse::reason( const string& reason )
+{
+	setReason( reason );
+	return *this;
+}
+
+HttpResponse& HttpResponse::statusCode( size_t code )
+{
+	setStatusCode( code );
+	return *this;
+}
+
 const string& HttpResponse::getReason() const
 {
 	return mReason;
 }
 
-void HttpResponse::setReason( const string& reason )
-{
-	mReason = reason;
-}
-
 size_t HttpResponse::getStatusCode() const
 {
 	return mStatusCode;
+}
+
+void HttpResponse::setReason( const string& reason )
+{
+	mReason = reason;
 }
 
 void HttpResponse::setStatusCode( size_t code )

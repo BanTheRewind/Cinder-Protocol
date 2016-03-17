@@ -47,19 +47,27 @@ public:
 	//! Creates a HTTP request. Populates request line with arguments.
 	HttpRequest( const std::string& options, const std::string& uri, HttpVersion httpVersion );
 	
+	HttpRequest( const HttpRequest& rhs );
+	HttpRequest&		operator=( const HttpRequest& rhs );
+
+	//! Sets HTTP options to \a options.
+	HttpRequest&		options( const std::string& options );
+	//! Sets URI to \a uri.
+	HttpRequest&		uri( const std::string& uri );
+
 	//! Returns HTTP options as string.
 	const std::string&	getOptions() const;
-	//! Sets HTTP options to \a options.
-	void		setOptions( const std::string& options );
-
 	//! Return URI as string.
 	const std::string&	getUri() const;
+
+	//! Sets HTTP options to \a options.
+	void				setOptions( const std::string& options );
 	//! Sets URI to \a uri.
-	void		setUri( const std::string& uri );
+	void				setUri( const std::string& uri );
 	
 	/*! Parses header from \a header. Throws exceptions for incomplete
 		or invalid headers. */
-	void		parseHeader( const std::string& header );
+	virtual void	parseHeader( const std::string& header ) override;
 	
 	//! Exception representing invalid request line.
 	class ExcRequestLineInvalid : public ci::Exception

@@ -52,6 +52,28 @@ FtpResponse::FtpResponse( size_t replyCode, const string& value )
 {
 }
 
+FtpResponse::FtpResponse( const FtpResponse& rhs )
+{
+	*this = rhs;
+}
+
+FtpResponse& FtpResponse::operator=( const FtpResponse& rhs )
+{
+	mKeyValuePair = rhs.mKeyValuePair;
+	return *this;
+}
+
+FtpResponse& FtpResponse::replyCode( FtpReplyCode c )
+{
+	setReplyCode( c );
+	return *this;
+}
+
+FtpResponse& FtpResponse::replyCode( size_t c )
+{
+	setReplyCode( c );
+	return *this;
+}
 
 string FtpResponse::getReplyCodeDescription( FtpReplyCode c )
 {

@@ -47,19 +47,24 @@ public:
 	//! Creates a HTTP response. Populates status line with arguments.
 	HttpResponse( HttpVersion httpVersion, size_t statusCode, const std::string& reason );
 	
+	//! Sets reason to \a reason.
+	HttpResponse&		reason( const std::string& reason );
+	//! Sets status code to \a code.
+	HttpResponse&		statusCode( size_t code );
+	
 	//! Returns reason.
 	const std::string&	getReason() const;
-	//! Sets reason to \a reason.
-	void		setReason( const std::string& reason );
-	
 	//! Returns status code.
-	size_t		getStatusCode() const;
-	//! Sets status code to \a code.
-	void		setStatusCode( size_t code );
+	size_t				getStatusCode() const;
 	
+	//! Sets reason to \a reason.
+	void				setReason( const std::string& reason );
+	//! Sets status code to \a code.
+	void				setStatusCode( size_t code );
+
 	/*! Parses header from \a header. Throws exceptions for incomplete
 		or invalid headers. */
-	void		parseHeader( const std::string& header );
+	void				parseHeader( const std::string& header );
 	
 	//! Exception representing invalid status line.
 	class ExcStatusLineInvalid : public ci::Exception

@@ -53,19 +53,48 @@ HttpRequest::HttpRequest( const string& options, const string& uri, HttpVersion 
 {
 }
 
+HttpRequest::HttpRequest( const HttpRequest& rhs )
+: HttpInterface( rhs.mHttpVersion )
+{
+	*this = rhs;
+}
+
+HttpRequest& HttpRequest::operator=( const HttpRequest& rhs )
+{
+	mBody			= rhs.mBody;
+	mHasHeader		= rhs.mHasHeader;
+	mHeaderMap		= rhs.mHeaderMap;
+	mHttpVersion	= rhs.mHttpVersion;
+	mOptions		= rhs.mOptions;
+	mUri			= rhs.mUri;
+	return *this;
+}
+
+HttpRequest& HttpRequest::options( const string& options )
+{
+	setOptions( options );
+	return *this;
+}
+
+HttpRequest& HttpRequest::uri( const string& uri )
+{
+	setUri( uri );
+	return *this;
+}
+
 const string& HttpRequest::getOptions() const
 {
 	return mOptions;
 }
 
-void HttpRequest::setOptions( const string& options )
-{
-	mOptions = options;
-}
-
 const string& HttpRequest::getUri() const
 {
 	return mUri;
+}
+
+void HttpRequest::setOptions( const string& options )
+{
+	mOptions = options;
 }
 
 void HttpRequest::setUri( const string& uri )

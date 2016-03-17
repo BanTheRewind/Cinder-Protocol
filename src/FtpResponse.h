@@ -100,8 +100,17 @@ public:
 	//! Returns string representing description of FtpReplyCode \a c.
 	static std::string	getReplyCodeDescription( FtpReplyCode c );
 
+	FtpResponse( const FtpResponse& rhs );
+	FtpResponse&		operator=( const FtpResponse& rhs );
+
+	//! Sets reply code to \a c.
+	FtpResponse&		replyCode( FtpReplyCode c );
+	//! Sets reply code to \a c.
+	FtpResponse&		replyCode( size_t c );
+
 	//! Returns reply code as size_t.
 	size_t				getReplyCode() const;
+
 	//! Sets reply code to \a c.
 	void				setReplyCode( FtpReplyCode c );
 	//! Sets reply code to \a c.
