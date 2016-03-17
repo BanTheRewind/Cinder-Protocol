@@ -54,7 +54,6 @@ HttpResponse::HttpResponse( HttpVersion httpVersion, size_t statusCode, const st
 }
 
 HttpResponse::HttpResponse( const HttpResponse& rhs )
-: HttpInterface( rhs.mHttpVersion )
 {
 	*this = rhs;
 }

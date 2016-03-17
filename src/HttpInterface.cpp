@@ -44,6 +44,11 @@
 using namespace ci;
 using namespace std;
 
+HttpInterface::HttpInterface()
+: BodyInterface(), HeaderInterface(), mHttpVersion( HttpVersion::HTTP_1_1 )
+{
+}
+
 HttpInterface::HttpInterface( HttpVersion v )
 : BodyInterface(), HeaderInterface(), mHttpVersion( v )
 {
