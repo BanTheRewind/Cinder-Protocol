@@ -54,6 +54,7 @@ HttpRequest::HttpRequest( const string& options, const string& uri, HttpVersion 
 }
 
 HttpRequest::HttpRequest( const HttpRequest& rhs )
+: HttpInterface( rhs.mHttpVersion )
 {
 	*this = rhs;
 }

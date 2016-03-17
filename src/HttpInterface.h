@@ -78,8 +78,7 @@ public:
 	private:
 		char mMessage[ 2048 ];
 	};
-protected:	
-	HttpInterface();
+protected:
 	HttpInterface( HttpVersion v );
 
 	HttpVersion				mHttpVersion;
