@@ -47,6 +47,9 @@ public:
 	//! Creates a HTTP response. Populates status line with arguments.
 	HttpResponse( HttpVersion httpVersion, size_t statusCode, const std::string& reason );
 	
+	HttpResponse( const HttpResponse& rhs );
+	HttpResponse&		operator=( const HttpResponse& rhs );
+
 	//! Sets reason to \a reason.
 	HttpResponse&		reason( const std::string& reason );
 	//! Sets status code to \a code.
